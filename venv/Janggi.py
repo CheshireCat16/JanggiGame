@@ -2,6 +2,7 @@ import pygame
 from pygame.locals import *
 from JanggiGame import JanggiGame, JanggiPiece
 import os
+from math import sqrt
 
 class Janggi:
     """The main pygame class for displaying the game"""
@@ -12,6 +13,7 @@ class Janggi:
         self._size = self.weight, self.height = 833, 927
         self._JanggiGame = JanggiGame()
         self._piece_images = {"blue":{}, "red": {}}
+        self._clicked_piece = None
 
     def on_init(self):
         """
@@ -83,6 +85,64 @@ class Janggi:
             self.on_loop()
             self.on_render()
         self.on_cleanup()
+
+    def on_lbutton_up(self, event):
+        """Handles a click on a peice"""
+        clicked_spot = None
+        click_box    = 0
+
+        # Get the current board for checking click locations
+        current_board = self._JanggiGame.get_board().get_board_layout()
+
+        # Find the row and column that was clicked
+        for row in range(0, 10):
+            for column in range(0, 9):
+                # Get the coordinates of the current location
+                x_loc = column*94+39
+                y_loc = row*94+39
+                # Get the coordinates of the click
+                x_click, y_click = event.pos
+                # Calculate the distance between the center and the click
+                distance = sqrt((x_loc-x_click)**2 + (y_loc-y_click)**2)
+                # Find what is at the location
+                piece = current_board[row][column]
+                # Set the click box based on the size of the piece at the location
+                if piece is not None:
+                    piece_type = piece.get_piece_type()
+                    if piece_type == "Horse" or piece_type == "Cannon" \
+                            or piece_type == "Chariot" or piece_type == "Elephant":
+                        click_box = 40
+                    elif piece_type == "General":
+                        click_box = 47
+                    else:
+                        click_box = 32
+                # Click box size is 42 if location is empty
+                else:
+                    click_box = 42
+
+                # Check whether or not the click is within the click box and exit for
+                if distance < click_box:
+                    clicked_spot = row, column
+                    break
+
+        # Handle the case where a piece has already been picked up
+        if self._clicked_piece is not None:
+            piece_location = self._clicked_piece.get_location()
+            # Put the piece down if the same spot is clicked again
+            if piece_location == clicked_spot:
+                self._clicked_piece = None
+            # Try the move otherwise
+            else:
+                self._JanggiGame.make_move(piece_location, clicked_spot)
+        # Handle the case where no piece has been picked up
+        else:
+            clicked_piece = current_board[clicked_spot[0]][clicked_spot[1]]
+            # Make sure a piece was clicked
+            if clicked_piece is not None:
+                if clicked_piece.get_color() == self._JanggiGame.get_current_side().get_color():
+                    self._clicked_piece = clicked_piece
+
+
 
 
 if __name__ == "__main__":

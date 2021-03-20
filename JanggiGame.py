@@ -832,7 +832,7 @@ class JanggiGame:
 
         return general_in_check
 
-    def make_move(self, from_space: str, to_space: str) -> bool:
+    def make_move(self, from_location: (int, int), to_location: (int, int)) -> bool:
         """
         Moves a piece from the specified location to the specified location
         if the move is valid. Passing the same to and from space will result in
@@ -847,10 +847,6 @@ class JanggiGame:
         # Get the current board state
         current_board = self.get_board()
 
-        # Get the row, column index of the to and from spaces
-        from_location = self.translate_space(from_space)
-        to_location = self.translate_space(to_space)
-
         # Get the current side
         current_side = self.get_current_side()
 
@@ -858,10 +854,10 @@ class JanggiGame:
         general_in_check = self.is_in_check(current_side.get_color(), current_board)
 
         # Check if the to and from spaces and not in check are the same and pass turn if so.
-        if from_space == to_space and not general_in_check:
+        if from_location == to_location and not general_in_check:
             self.change_current_side()
             return True
-        elif from_space == to_space and general_in_check:
+        elif from_location == to_location and general_in_check:
             return False
 
         # This is the peice that is going to move
