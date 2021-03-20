@@ -53,11 +53,11 @@ class Janggi:
 
     def on_render(self):
         """Shows the current state of the game board"""
+        # Display the game board
         self._display_surf.blit(self._board_image, (0, 0))
 
+        # Loop through board and put pieces in the correct location
         current_board = self._JanggiGame.get_board().get_board_layout()
-
-        # Loop through board
         for row in range(0, 10):
             for column in range(0, 9):
                 piece = current_board[row][column]
@@ -66,9 +66,7 @@ class Janggi:
                     piece_type = piece.get_piece_type()
                     self._display_surf.blit(self._piece_images[color][piece_type], (column*94-20, row*94-13))
 
-
-
-
+        # Render the board
         pygame.display.flip()
 
     def on_cleanup(self):
