@@ -497,7 +497,7 @@ class Soldier(JanggiPiece):
     def __init__(self, color: str):
         """Initializes the Soldier piece with color"""
         super().__init__(color)
-        self._piece_type = "Solider"
+        self._piece_type = "Soldier"
 
     def __repr__(self):
         """
