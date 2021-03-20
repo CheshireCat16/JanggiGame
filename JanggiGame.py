@@ -139,6 +139,11 @@ class General(JanggiPiece):
 
         return valid_move_list
 
+    def get_piece_type(self) -> str:
+        """Returns a string for the piece type"""
+        return self._piece_type
+
+
 
 class Guard(JanggiPiece):
     """This is the class for the Guard piece. It inherits from JanggiPiece"""
@@ -180,6 +185,10 @@ class Guard(JanggiPiece):
                         valid_move_list.append((row, column))
 
         return valid_move_list
+
+    def get_piece_type(self) -> str:
+        """Returns a string for the piece type"""
+        return self._piece_type
 
 
 class Horse(JanggiPiece):
@@ -236,6 +245,10 @@ class Horse(JanggiPiece):
 
         return valid_move_list
 
+    def get_piece_type(self) -> str:
+        """Returns a string for the piece type"""
+        return self._piece_type
+
 
 class Elephant(JanggiPiece):
     """This is the class for the Elephant piece. It inherits from JanggiPiece"""
@@ -289,6 +302,10 @@ class Elephant(JanggiPiece):
             if valid_move:
                 valid_move_list.append(target_position)
         return valid_move_list
+
+    def get_piece_type(self) -> str:
+        """Returns a string for the piece type"""
+        return self._piece_type
 
 
 class Chariot(JanggiPiece):
@@ -350,6 +367,10 @@ class Chariot(JanggiPiece):
                     target_position = target_position[0] + row_move, target_position[1] + column_move
 
         return valid_move_list
+
+    def get_piece_type(self) -> str:
+        """Returns a string for the piece type"""
+        return self._piece_type
 
 
 class Cannon(JanggiPiece):
@@ -466,6 +487,10 @@ class Cannon(JanggiPiece):
 
         return valid_move_list
 
+    def get_piece_type(self) -> str:
+        """Returns a string for the piece type"""
+        return self._piece_type
+
 
 class Soldier(JanggiPiece):
     """This is the class for the Soldier piece. It inherits from JanggiPiece"""
@@ -517,6 +542,10 @@ class Soldier(JanggiPiece):
 
         # All valid moves listed, return the list
         return valid_move_list
+
+    def get_piece_type(self) -> str:
+        """Returns a string for the piece type"""
+        return self._piece_type
 
 
 class JanggiBoard:
