@@ -123,24 +123,31 @@ class Janggi:
                 # Check whether or not the click is within the click box and exit for
                 if distance < click_box:
                     clicked_spot = row, column
+                    print(clicked_spot)
+                    print(self._clicked_piece)
                     break
 
-        # Handle the case where a piece has already been picked up
-        if self._clicked_piece is not None:
-            piece_location = self._clicked_piece.get_location()
-            # Put the piece down if the same spot is clicked again
-            if piece_location == clicked_spot:
-                self._clicked_piece = None
-            # Try the move otherwise
+        # Check that there was a valid click
+        if clicked_spot is not None:
+            # Handle the case where a piece has already been picked up
+            if self._clicked_piece is not None:
+                piece_location = self._clicked_piece.get_location()
+                # Put the piece down if the same spot is clicked again
+                if piece_location == clicked_spot:
+                    self._clicked_piece = None
+                # Try the move otherwise
+                else:
+                    move_success = self._JanggiGame.make_move(piece_location, clicked_spot)
+                    # If the move is successful, reset the current clicked piece
+                    if move_success is True:
+                        self._clicked_piece = None
+            # Handle the case where no piece has been picked up
             else:
-                self._JanggiGame.make_move(piece_location, clicked_spot)
-        # Handle the case where no piece has been picked up
-        else:
-            clicked_piece = current_board[clicked_spot[0]][clicked_spot[1]]
-            # Make sure a piece was clicked
-            if clicked_piece is not None:
-                if clicked_piece.get_color() == self._JanggiGame.get_current_side().get_color():
-                    self._clicked_piece = clicked_piece
+                clicked_piece = current_board[clicked_spot[0]][clicked_spot[1]]
+                # Make sure a piece was clicked
+                if clicked_piece is not None:
+                    if clicked_piece.get_color() == self._JanggiGame.get_current_side().get_color():
+                        self._clicked_piece = clicked_piece
 
 
 
