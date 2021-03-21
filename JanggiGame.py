@@ -978,7 +978,7 @@ class JanggiGame:
                             test_board = deepcopy(current_board)
                             test_board.clear_space(from_location[0], from_location[1])
                             # Get info on move to location and remove piece if required
-                            target_piece = test_board.get_space_info(move[0], move[1])
+                            target_piece = current_board.get_space_info(move[0], move[1])
                             if target_piece is not None:
                                 target_piece.remove()
                             test_board.set_space_info(move[0], move[1], piece)
