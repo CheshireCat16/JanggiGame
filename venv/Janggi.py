@@ -10,7 +10,7 @@ class Janggi:
         """Initialized the game"""
         self._running = True
         self._display_surf = None
-        self._size = self.weight, self.height = 1133, 927
+        self._size = self._weight, self._height = 1133, 927
         self._JanggiGame = JanggiGame()
         self._piece_images = {"blue":{}, "red": {}}
         self._clicked_piece = None
@@ -28,9 +28,13 @@ class Janggi:
         """
         # Start up pygame and the game display
         pygame.init()
-        self._display_surf = pygame.display.set_mode(self._size, pygame.HWSURFACE | pygame.DOUBLEBUF)
-        pygame.display.set_caption("Janggi - Korean Chess")
         self._running = True
+        self._display_surf = pygame.display.set_mode(self._size, pygame.HWSURFACE | pygame.DOUBLEBUF)
+        # This surface is used to draw semi-transparent figures
+        self._transparent_surf = pygame.Surface((1133, 927), pygame.SRCALPHA)
+        self._transparent_surf.fill((255, 255, 255, 0))
+        # Set the game window name
+        pygame.display.set_caption("Janggi - Korean Chess")
 
         # Load images of board and game pieces
         self._board_image = pygame.image.load(r"C:\Users\John\OneDrive\Documents\Python Programs\JanggiGame\JanggiPieces\JanggiBoard.gif").convert()
@@ -48,7 +52,6 @@ class Janggi:
         self._piece_images["red"]["Elephant"] = pygame.image.load(r"C:\Users\John\OneDrive\Documents\Python Programs\JanggiGame\JanggiPieces\Red_Sang.png").convert()
         self._piece_images["red"]["Horse"] = pygame.image.load(r"C:\Users\John\OneDrive\Documents\Python Programs\JanggiGame\JanggiPieces\Red_Ma.png").convert()
         self._piece_images["red"]["Soldier"] = pygame.image.load(r"C:\Users\John\OneDrive\Documents\Python Programs\JanggiGame\JanggiPieces\Red_Byung.png").convert()
-        self._valid_move_img = pygame.image.load(r"C:\Users\John\OneDrive\Documents\Python Programs\JanggiGame\JanggiPieces\ValidMove.png").convert()
         self._status_bar_img = pygame.image.load(r"C:\Users\John\OneDrive\Documents\Python Programs\JanggiGame\JanggiPieces\StatusBar.png").convert()
 
         # Set up font to show current player and menu
@@ -90,10 +93,13 @@ class Janggi:
         # Draw valid moves and selected piece if a piece has been clicked
         if self._clicked_piece is not None:
             valid_moves = self._clicked_piece.find_valid_moves(self._JanggiGame.get_board())
+            new_surface = self._transparent_surf.copy()
             for row, column in valid_moves:
-                self._display_surf.blit(self._valid_move_img, (column * 94 - 20, row * 94 - 13))
+                pygame.draw.circle(new_surface, (108, 253, 255), (column * 94 + 41, row * 94 + 41), 20)
             row, column = self._clicked_piece.get_location()
-            self._display_surf.blit(self._valid_move_img, (column * 94 - 20, row * 94 - 13))
+            pygame.draw.circle(new_surface, (255, 255, 77), (column * 94 + 41, row * 94 + 41), 12)
+            new_surface.set_alpha(150)
+            self._display_surf.blit(new_surface, (0, 0))
 
         # Show text for current side
         if self._JanggiGame.get_current_side().get_color() == "blue":
