@@ -14,6 +14,7 @@ class Janggi:
         self._JanggiGame = JanggiGame()
         self._piece_images = {"blue":{}, "red": {}}
         self._clicked_piece = None
+        self._valid_move_img = None
 
     def on_init(self):
         """
@@ -40,6 +41,7 @@ class Janggi:
         self._piece_images["red"]["Elephant"] = pygame.image.load(r"C:\Users\John\OneDrive\Documents\Python Programs\JanggiGame\JanggiPieces\Red_Sang.png").convert()
         self._piece_images["red"]["Horse"] = pygame.image.load(r"C:\Users\John\OneDrive\Documents\Python Programs\JanggiGame\JanggiPieces\Red_Ma.png").convert()
         self._piece_images["red"]["Soldier"] = pygame.image.load(r"C:\Users\John\OneDrive\Documents\Python Programs\JanggiGame\JanggiPieces\Red_Byung.png").convert()
+        self._valid_move_img = pygame.image.load(r"C:\Users\John\OneDrive\Documents\Python Programs\JanggiGame\JanggiPieces\ValidMove.png").convert()
 
     def on_event(self, event):
         """Handles game events"""
@@ -67,6 +69,13 @@ class Janggi:
                     color = piece.get_color()
                     piece_type = piece.get_piece_type()
                     self._display_surf.blit(self._piece_images[color][piece_type], (column*94-20, row*94-13))
+
+        # Draw valid moves if a piece has been clicked
+        if self._clicked_piece is not None:
+            valid_moves = self._clicked_piece.find_valid_moves(self._JanggiGame.get_board())
+            for row, column in valid_moves:
+                self._display_surf.blit(self._valid_move_img, (column * 94 - 20, row * 94 - 13))
+
 
         # Render the board
         pygame.display.flip()

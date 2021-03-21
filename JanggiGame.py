@@ -114,7 +114,7 @@ class General(JanggiPiece):
 
     def find_valid_moves(self, board: "JanggiBoard") -> list:
         """
-        Creates a list of all valid moves
+        Creates a list of all valid . Note: does not check for check
         :param board: The JanggiBoard object to find moves on
         :return: list of moves that are valid
         """
@@ -529,7 +529,7 @@ class Soldier(JanggiPiece):
             if board.check_empty_or_enemy_or_off_board(target_position[0], target_position[1], current_side):
                 valid_move_list.append(target_position)
 
-        # Check for valid moves in the place
+        # Check for valid moves in the palace
         if board.check_space_in_palace(current_position[0], current_position[1]):
             move_list = [(move_direction, -1), (move_direction, 1)]
             for move_row, move_column in move_list:
