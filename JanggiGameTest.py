@@ -85,9 +85,9 @@ class JanggiGameTest(unittest.TestCase):
         self.assertIsInstance(self.my_game._board.get_board_layout()[6][3], Soldier)
 
         # Move blue soldier up into palace
-        self.my_game.make_move((6, 3), "d6")
+        self.my_game.make_move((6, 3), (5, 3))
         self.my_game.make_move((0, 0), (0, 0))
-        self.my_game.make_move("d6", (4, 3))
+        self.my_game.make_move((5, 3), (4, 3))
         self.my_game.make_move((0, 0), (0, 0))
         self.my_game.make_move((4, 3), (3, 3))
         self.my_game.make_move((0, 0), (0, 0))
@@ -357,7 +357,7 @@ class JanggiGameTest(unittest.TestCase):
         # Move blue chariot
         move_complete = self.my_game.make_move((9, 0), (9, 1))
         self.assertEqual(move_complete, False)
-        move_complete = self.my_game.make_move((9, 0), (9, 0))
+        move_complete = self.my_game.make_move((9, 0), (7, 0))
         self.assertEqual(move_complete, True)
         self.assertEqual(self.my_game._board.get_board_layout()[7][0].get_color(), "blue")
         self.assertIsInstance(self.my_game._board.get_board_layout()[7][0], Chariot)
@@ -367,9 +367,9 @@ class JanggiGameTest(unittest.TestCase):
         self.assertEqual(move_complete, True)
 
         # Move blue chariot
-        move_complete = self.my_game.make_move((9, 0), (5, 0))
+        move_complete = self.my_game.make_move((7, 0), (5, 0))
         self.assertEqual(move_complete, False)
-        move_complete = self.my_game.make_move((9, 0), (8, 0))
+        move_complete = self.my_game.make_move((7, 0), (8, 0))
         self.assertEqual(move_complete, True)
 
         # Move red chariot
@@ -382,11 +382,14 @@ class JanggiGameTest(unittest.TestCase):
 
         # Move red chariot
         move_complete = self.my_game.make_move((1, 5), (0, 4))
+        self.assertEqual(move_complete, False)
+        move_complete = self.my_game.make_move((1, 5), (2, 5))
         self.assertEqual(move_complete, True)
 
         # Move blue chariot
         move_complete = self.my_game.make_move((8, 3), (6, 5))
         self.assertEqual(move_complete, False)
+
 
     def test_grade_scope_test(self):
         move_complete = self.my_game.make_move((6, 0), (5, 0))
@@ -887,7 +890,7 @@ class JanggiGameTest(unittest.TestCase):
         red_check = self.my_game.is_in_check("red")
         blue_check = self.my_game.is_in_check("blue")
         self.assertEqual(False, red_check)
-        self.assertEqual(True, blue_check)
+        self.assertEqual(False, blue_check)
         # Blue
         move_complete = self.my_game.make_move((7, 4), (8, 5))
         self.assertEqual(move_complete, False)
@@ -896,7 +899,7 @@ class JanggiGameTest(unittest.TestCase):
         red_check = self.my_game.is_in_check("red")
         blue_check = self.my_game.is_in_check("blue")
         self.assertEqual(False, red_check)
-        self.assertEqual(True, blue_check)
+        self.assertEqual(False, blue_check)
         # Blue
         move_complete = self.my_game.make_move((7, 4), (7, 3))
         self.assertEqual(move_complete, True)
@@ -988,7 +991,7 @@ class JanggiGameTest(unittest.TestCase):
         self.assertEqual(False, red_check)
         self.assertEqual(False, blue_check)
         # Red
-        move_complete = self.my_game.make_move((4, 3), "d6")
+        move_complete = self.my_game.make_move((4, 3), (5, 3))
         self.assertEqual(move_complete, True)
         result = self.my_game.get_game_state()
         self.assertEqual("UNFINISHED", result)
@@ -1006,7 +1009,7 @@ class JanggiGameTest(unittest.TestCase):
         self.assertEqual(False, red_check)
         self.assertEqual(False, blue_check)
         # Red
-        move_complete = self.my_game.make_move("d6", (6, 3))
+        move_complete = self.my_game.make_move((5, 3), (6, 3))
         self.assertEqual(move_complete, True)
         result = self.my_game.get_game_state()
         self.assertEqual("RED_WON", result)
