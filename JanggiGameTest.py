@@ -30,29 +30,29 @@ class JanggiGameTest(unittest.TestCase):
         and whether turn is properly changed.
         """
         # Try passing a turn
-        self.my_game.make_move("a1", "a1")
+        self.my_game.make_move((0, 0), (0, 0))
         self.assertEqual("red", self.my_game.get_current_side().get_color())
 
         # Currently Red's move, try to move a Blue piece
-        move_result = self.my_game.make_move("h4", "h5")
+        move_result = self.my_game.make_move((7, 3), (7, 4))
         self.assertFalse(move_result)
 
         # Try to move from a space with no piece
-        move_result = self.my_game.make_move("d4", "h5")
+        move_result = self.my_game.make_move((3, 3), (7, 4))
         self.assertFalse(move_result)
 
         # Move a red soldier up one row
-        self.my_game.make_move("a4", "a5")
+        self.my_game.make_move((0, 3), (0, 4))
         self.assertIsInstance(self.my_game._board.get_board_layout()[4][0],
                               Soldier)
 
         # Move a blue soldier up one row
-        self.my_game.make_move("a7", "a6")
+        self.my_game.make_move((0, 6), (0, 5))
         self.assertIsInstance(self.my_game._board.get_board_layout()[5][0],
                               Soldier)
 
         # Move a red soldier up one row and take the blue piece
-        self.my_game.make_move("a5", "a6")
+        self.my_game.make_move((0, 4), (0, 5))
         self.assertIsInstance(self.my_game._board.get_board_layout()[5][0],
                               Soldier)
         self.assertEqual(self.my_game._board.get_board_layout()[5][0].get_color(), "red")
@@ -60,492 +60,489 @@ class JanggiGameTest(unittest.TestCase):
         self.assertIsInstance(self.my_game._blue_side.get_pieces(False)[0], Soldier)
 
         # Try to move a soldier two spaces
-        move_complete = self.my_game.make_move("c7", "e7")
+        move_complete = self.my_game.make_move((2, 6), (4, 6))
         self.assertEqual(move_complete, False)
 
         # Move a blue solider one space to left
-        move_complete = self.my_game.make_move("c7", "d7")
+        move_complete = self.my_game.make_move((2, 6), (3, 6))
         self.assertEqual(move_complete, True)
-        self.assertEqual(self.my_game._board.get_board_layout()[6][3].get_color(), "blue")
+        self.assertEqual(self.my_game._board.get_board_layout()[6][3].get_color(),"blue")
         self.assertIsInstance(self.my_game._board.get_board_layout()[6][3], Soldier)
 
         # Pass reds turn
-        self.my_game.make_move("a1", "a1")
+        self.my_game.make_move((0, 0), (0, 0))
 
         # Try to move blue solider into space of other blue soldier
-        move_complete = self.my_game.make_move("d7", "e7")
+        move_complete = self.my_game.make_move((3, 6), (4, 6))
         self.assertEqual(move_complete, False)
-        self.assertEqual(self.my_game._board.get_board_layout()[6][3].get_color(), "blue")
+        self.assertEqual(self.my_game._board.get_board_layout()[6][3].get_color(),"blue")
         self.assertIsInstance(self.my_game._board.get_board_layout()[6][3], Soldier)
 
         # Make sure the soldier can't move backward
-        move_complete = self.my_game.make_move("d7", "d8")
+        move_complete = self.my_game.make_move((3, 6), (3, 7))
         self.assertEqual(move_complete, False)
-        self.assertEqual(self.my_game._board.get_board_layout()[6][3].get_color(), "blue")
+        self.assertEqual(self.my_game._board.get_board_layout()[6][3].get_color(),"blue")
         self.assertIsInstance(self.my_game._board.get_board_layout()[6][3], Soldier)
 
         # Move blue soldier up into palace
-        self.my_game.make_move("d7", "d6")
-        self.my_game.make_move("a1", "a1")
-        self.my_game.make_move("d6", "d5")
-        self.my_game.make_move("a1", "a1")
-        self.my_game.make_move("d5", "d4")
-        self.my_game.make_move("a1", "a1")
-        self.my_game.make_move("d4", "d3")
+        self.my_game.make_move((3, 6), (3, 5))
+        self.my_game.make_move((0, 0), (0, 0))
+        self.my_game.make_move((3, 5), (3, 4))
+        self.my_game.make_move((0, 0), (0, 0))
+        self.my_game.make_move((3, 4), (3, 3))
+        self.my_game.make_move((0, 0), (0, 0))
+        self.my_game.make_move((3, 3), (3, 2))
 
         # Try an invalid move with the general
-        move_complete = self.my_game.make_move("e2", "f1")
+        move_complete = self.my_game.make_move((4, 1), (5, 0))
         self.assertEqual(move_complete, False)
         self.assertEqual(self.my_game._board.get_board_layout()[1][4].get_color(), "red")
         self.assertIsInstance(self.my_game._board.get_board_layout()[1][4], General)
 
         # Try an invalid move with the general
-        move_complete = self.my_game.make_move("e2", "d1")
+        move_complete = self.my_game.make_move((4, 1), (3, 0))
         self.assertEqual(move_complete, False)
         self.assertEqual(self.my_game._board.get_board_layout()[1][4].get_color(), "red")
         self.assertIsInstance(self.my_game._board.get_board_layout()[1][4], General)
 
         # Try an valid move with the general
-        move_complete = self.my_game.make_move("e2", "f2")
+        move_complete = self.my_game.make_move((4, 1), (5, 1))
         self.assertEqual(move_complete, True)
         self.assertEqual(self.my_game._board.get_board_layout()[1][5].get_color(), "red")
         self.assertIsInstance(self.my_game._board.get_board_layout()[1][5], General)
 
         # Check if the soldier can move forward left
-        move_complete = self.my_game.make_move("d3", "c2")
+        move_complete = self.my_game.make_move((3, 2), (2, 1))
         self.assertEqual(move_complete, False)
-        self.assertEqual(self.my_game._board.get_board_layout()[2][3].get_color(), "blue")
+        self.assertEqual(self.my_game._board.get_board_layout()[2][3].get_color(),"blue")
         self.assertIsInstance(self.my_game._board.get_board_layout()[2][3], Soldier)
 
         # Check if the soldier can move forward right
-        move_complete = self.my_game.make_move("d3", "e2")
+        move_complete = self.my_game.make_move((3, 2), (4, 1))
         self.assertEqual(move_complete, True)
-        self.assertEqual(self.my_game._board.get_board_layout()[1][4].get_color(), "blue")
+        self.assertEqual(self.my_game._board.get_board_layout()[1][4].get_color(),"blue")
         self.assertIsInstance(self.my_game._board.get_board_layout()[1][4], Soldier)
 
         # Check if the soldier can move forward right again
-        self.my_game.make_move("f2", "f3")
-        move_complete = self.my_game.make_move("e2", "f1")
+        self.my_game.make_move((5, 1), (5, 2))
+        move_complete = self.my_game.make_move((4, 1), (5, 0))
         self.assertEqual(move_complete, True)
-        self.assertEqual(self.my_game._board.get_board_layout()[0][5].get_color(), "blue")
+        self.assertEqual(self.my_game._board.get_board_layout()[0][5].get_color(),"blue")
         self.assertIsInstance(self.my_game._board.get_board_layout()[0][5], Soldier)
 
         # Check if the soldier can move forward
-        self.my_game.make_move("a1", "a1")
-        move_complete = self.my_game.make_move("f1", "f0")
+        self.my_game.make_move((0, 0), (0, 0))
+        move_complete = self.my_game.make_move((5, 0), (5, 0))
         self.assertEqual(move_complete, False)
-        self.assertEqual(self.my_game._board.get_board_layout()[0][5].get_color(), "blue")
+        self.assertEqual(self.my_game._board.get_board_layout()[0][5].get_color(),"blue")
         self.assertIsInstance(self.my_game._board.get_board_layout()[0][5], Soldier)
-        self.my_game.make_move("a1", "a1")
+        self.my_game.make_move((0, 0), (0, 0))
 
         # Try an invalid move with the general
-        move_complete = self.my_game.make_move("f3", "g3")
+        move_complete = self.my_game.make_move((5, 2), (6, 2))
         self.assertEqual(move_complete, False)
         self.assertEqual(self.my_game._board.get_board_layout()[2][5].get_color(), "red")
         self.assertIsInstance(self.my_game._board.get_board_layout()[2][5], General)
 
         # Take the soldier on f1
-        move_complete = self.my_game.make_move("f3", "f2")
+        move_complete = self.my_game.make_move((5, 2), (5, 1))
         self.assertEqual(move_complete, True)
-        move_complete = self.my_game.make_move("a1", "a1")
+        move_complete = self.my_game.make_move((0, 0), (0, 0))
         self.assertEqual(move_complete, True)
-        move_complete = self.my_game.make_move("f2", "f1")
+        move_complete = self.my_game.make_move((5, 1), (5, 0))
         self.assertEqual(move_complete, True)
         self.assertEqual(self.my_game._board.get_board_layout()[0][5].get_color(), "red")
         self.assertIsInstance(self.my_game._board.get_board_layout()[0][5], General)
-        self.my_game.make_move("a1", "a1")
+        self.my_game.make_move((0, 0), (0, 0))
 
         # Try to move out of the palace down
-        move_complete = self.my_game.make_move("f1", "f2")
+        move_complete = self.my_game.make_move((5, 0), (5, 1))
         self.assertEqual(move_complete, True)
         self.assertEqual(self.my_game._board.get_board_layout()[1][5].get_color(), "red")
         self.assertIsInstance(self.my_game._board.get_board_layout()[1][5], General)
-        self.my_game.make_move("a1", "a1")
-        move_complete = self.my_game.make_move("f2", "f3")
+        self.my_game.make_move((0, 0), (0, 0))
+        move_complete = self.my_game.make_move((5, 1), (5, 2))
         self.assertEqual(move_complete, True)
         self.assertEqual(self.my_game._board.get_board_layout()[2][5].get_color(), "red")
         self.assertIsInstance(self.my_game._board.get_board_layout()[2][5], General)
-        self.my_game.make_move("a1", "a1")
-        move_complete = self.my_game.make_move("f3", "f4")
+        self.my_game.make_move((0, 0), (0, 0))
+        move_complete = self.my_game.make_move((5, 2), (5, 3))
         self.assertEqual(move_complete, False)
         self.assertEqual(self.my_game._board.get_board_layout()[2][5].get_color(), "red")
         self.assertIsInstance(self.my_game._board.get_board_layout()[2][5], General)
 
         # Try to move out of the palace left
-        move_complete = self.my_game.make_move("f3", "e3")
+        move_complete = self.my_game.make_move((5, 2), (4, 2))
         self.assertEqual(move_complete, True)
         self.assertEqual(self.my_game._board.get_board_layout()[2][4].get_color(), "red")
         self.assertIsInstance(self.my_game._board.get_board_layout()[2][4], General)
-        self.my_game.make_move("a1", "a1")
-        move_complete = self.my_game.make_move("e3", "d3")
+        self.my_game.make_move((0, 0), (0, 0))
+        move_complete = self.my_game.make_move((4, 2), (3, 2))
         self.assertEqual(move_complete, True)
         self.assertEqual(self.my_game._board.get_board_layout()[2][3].get_color(), "red")
         self.assertIsInstance(self.my_game._board.get_board_layout()[2][3], General)
-        self.my_game.make_move("a1", "a1")
-        move_complete = self.my_game.make_move("d3", "c4")
+        self.my_game.make_move((0, 0), (0, 0))
+        move_complete = self.my_game.make_move((3, 2), (2, 3))
         self.assertEqual(move_complete, False)
         self.assertEqual(self.my_game._board.get_board_layout()[2][3].get_color(), "red")
         self.assertIsInstance(self.my_game._board.get_board_layout()[2][3], General)
-        self.my_game.make_move("a1", "a1")
+        self.my_game.make_move((0, 0), (0, 0))
 
         # Try to move out of the palace upper left (blue)
-        move_complete = self.my_game.make_move("e9", "f8")
+        move_complete = self.my_game.make_move((4, 8), (5, 7))
         self.assertEqual(move_complete, True)
-        self.assertEqual(self.my_game._board.get_board_layout()[7][5].get_color(), "blue")
+        self.assertEqual(self.my_game._board.get_board_layout()[7][5].get_color(),"blue")
         self.assertIsInstance(self.my_game._board.get_board_layout()[7][5], General)
-        self.my_game.make_move("a1", "a1")
-        move_complete = self.my_game.make_move("e9", "f7")
+        self.my_game.make_move((0, 0), (0, 0))
+        move_complete = self.my_game.make_move((4, 8), (5, 6))
         self.assertEqual(move_complete, False)
-        self.assertEqual(self.my_game._board.get_board_layout()[7][5].get_color(), "blue")
+        self.assertEqual(self.my_game._board.get_board_layout()[7][5].get_color(),"blue")
         self.assertIsInstance(self.my_game._board.get_board_layout()[7][5], General)
 
         # Move a guard
-        move_complete = self.my_game.make_move("d10", "d9")
+        move_complete = self.my_game.make_move((3, 9), (3, 8))
         self.assertEqual(move_complete, True)
-        self.assertEqual(self.my_game._board.get_board_layout()[8][3].get_color(), "blue")
+        self.assertEqual(self.my_game._board.get_board_layout()[8][3].get_color(),"blue")
         self.assertIsInstance(self.my_game._board.get_board_layout()[8][3], Guard)
 
     def test_horse(self):
         # Move blue horse
-        move_complete = self.my_game.make_move("h10", "f9")
+        move_complete = self.my_game.make_move((7, 9), (5, 8))
         self.assertEqual(move_complete, False)
-        move_complete = self.my_game.make_move("h10", "i8")
+        move_complete = self.my_game.make_move((7, 9), (8, 7))
         self.assertEqual(move_complete, True)
 
         # Move horse
-        move_complete = self.my_game.make_move("c1", "d3")
+        move_complete = self.my_game.make_move((2, 0), (3, 2))
         self.assertEqual(move_complete, True)
 
     def test_cannon(self):
         # Move blue cannon
-        move_complete = self.my_game.make_move("b8", "b7")
+        move_complete = self.my_game.make_move((1, 7), (1, 6))
         self.assertEqual(move_complete, False)
         # Move blue general
-        move_complete = self.my_game.make_move("e9", "e8")
+        move_complete = self.my_game.make_move((4, 8), (4, 7))
         self.assertEqual(move_complete, True)
 
         # Move red cannon
-        move_complete = self.my_game.make_move("b3", "d3")
+        move_complete = self.my_game.make_move((1, 2), (3, 2))
         self.assertEqual(move_complete, False)
         # Move red Horse
-        move_complete = self.my_game.make_move("c1", "d3")
+        move_complete = self.my_game.make_move((2, 0), (3, 2))
         self.assertEqual(move_complete, True)
 
         # Move blue cannon
-        move_complete = self.my_game.make_move("b8", "g8")
+        move_complete = self.my_game.make_move((1, 7), (6, 7))
         self.assertEqual(move_complete, True)
 
         # Move red cannon
-        move_complete = self.my_game.make_move("b3", "g3")
+        move_complete = self.my_game.make_move((1, 2), (6, 2))
         self.assertEqual(move_complete, True)
 
         # Move blue cannon
-        move_complete = self.my_game.make_move("g8", "g4")
+        move_complete = self.my_game.make_move((6, 7), (6, 3))
         self.assertEqual(move_complete, True)
-        self.assertEqual(self.my_game._board.get_board_layout()[3][6].get_color(), "blue")
+        self.assertEqual(self.my_game._board.get_board_layout()[3][6].get_color(),"blue")
         self.assertIsInstance(self.my_game._board.get_board_layout()[3][6], Cannon)
 
         # Test cannon in Palace
         # Move red cannon
-        move_complete = self.my_game.make_move("g3", "g7")
+        move_complete = self.my_game.make_move((6, 2), (6, 6))
         self.assertEqual(move_complete, False)
         # Move red guard
-        move_complete = self.my_game.make_move("f1", "f2")
+        move_complete = self.my_game.make_move((5, 0), (5, 1))
         self.assertEqual(move_complete, True)
-        self.my_game.make_move("a1", "a1")
-        move_complete = self.my_game.make_move("f2", "f3")
+        self.my_game.make_move((0, 0), (0, 0))
+        move_complete = self.my_game.make_move((5, 1), (5, 2))
         self.assertEqual(move_complete, True)
-        self.my_game.make_move("a1", "a1")
-        move_complete = self.my_game.make_move("d3", "c5")
+        self.my_game.make_move((0, 0), (0, 0))
+        move_complete = self.my_game.make_move((3, 2), (2, 4))
         self.assertEqual(move_complete, True)
-        self.my_game.make_move("a1", "a1")
-        move_complete = self.my_game.make_move("g3", "d3")
+        self.my_game.make_move((0, 0), (0, 0))
+        move_complete = self.my_game.make_move((6, 2), (3, 2))
         self.assertEqual(move_complete, True)
-        self.my_game.make_move("a1", "a1")
-        move_complete = self.my_game.make_move("d3", "f1")
+        self.my_game.make_move((0, 0), (0, 0))
+        move_complete = self.my_game.make_move((3, 2), (5, 0))
         self.assertEqual(move_complete, True)
         self.assertEqual(self.my_game._board.get_board_layout()[0][5].get_color(), "red")
         self.assertIsInstance(self.my_game._board.get_board_layout()[0][5], Cannon)
-        self.my_game.make_move("a1", "a1")
+        self.my_game.make_move((0, 0), (0, 0))
 
     def test_cannon_palace_alternate(self):
         # Move blue cannon
-        move_complete = self.my_game.make_move("b8", "b7")
+        move_complete = self.my_game.make_move((1, 7), (1, 6))
         self.assertEqual(move_complete, False)
         # Move blue general
-        move_complete = self.my_game.make_move("e9", "e8")
+        move_complete = self.my_game.make_move((4, 8), (4, 7))
         self.assertEqual(move_complete, True)
 
         # Move red cannon
-        move_complete = self.my_game.make_move("b3", "d3")
+        move_complete = self.my_game.make_move((1, 2), (3, 2))
         self.assertEqual(move_complete, False)
         # Move red Horse
-        move_complete = self.my_game.make_move("c1", "d3")
+        move_complete = self.my_game.make_move((2, 0), (3, 2))
         self.assertEqual(move_complete, True)
 
         # Move blue cannon
-        move_complete = self.my_game.make_move("b8", "g8")
+        move_complete = self.my_game.make_move((1, 7), (6, 7))
         self.assertEqual(move_complete, True)
 
         # Move red cannon
-        move_complete = self.my_game.make_move("b3", "g3")
+        move_complete = self.my_game.make_move((1, 2), (6, 2))
         self.assertEqual(move_complete, True)
 
         # Move blue cannon
-        move_complete = self.my_game.make_move("g8", "g4")
+        move_complete = self.my_game.make_move((6, 7), (6, 3))
         self.assertEqual(move_complete, True)
         self.assertEqual(self.my_game._board.get_board_layout()[3][6].get_color(), "blue")
         self.assertIsInstance(self.my_game._board.get_board_layout()[3][6], Cannon)
-
         # Test cannon in Palace
         # Move red cannon
-        move_complete = self.my_game.make_move("g3", "g7")
+        move_complete = self.my_game.make_move((6, 2), (6, 6))
         self.assertEqual(move_complete, False)
         # Move red guard
-        move_complete = self.my_game.make_move("f1", "f2")
+        move_complete = self.my_game.make_move((5, 0), (5, 1))
         self.assertEqual(move_complete, True)
-        self.my_game.make_move("a1", "a1")
-        move_complete = self.my_game.make_move("f2", "f3")
+        self.my_game.make_move((0, 0), (0, 0))
+        move_complete = self.my_game.make_move((5, 1), (5, 2))
         self.assertEqual(move_complete, True)
-        self.my_game.make_move("a1", "a1")
-        move_complete = self.my_game.make_move("d3", "c5")
+        self.my_game.make_move((0, 0), (0, 0))
+        move_complete = self.my_game.make_move((3, 2), (2, 4))
         self.assertEqual(move_complete, True)
-        self.my_game.make_move("a1", "a1")
-        move_complete = self.my_game.make_move("g3", "e3")
+        self.my_game.make_move((0, 0), (0, 0))
+        move_complete = self.my_game.make_move((6, 2), (4, 2))
         self.assertEqual(move_complete, True)
-        self.my_game.make_move("a1", "a1")
-        move_complete = self.my_game.make_move("e3", "f2")
+        self.my_game.make_move((0, 0), (0, 0))
+        move_complete = self.my_game.make_move((4, 2), (5, 1))
         self.assertEqual(move_complete, False)
         self.assertEqual(self.my_game._board.get_board_layout()[2][4].get_color(), "red")
         self.assertIsInstance(self.my_game._board.get_board_layout()[2][4], Cannon)
-        self.my_game.make_move("a1", "a1")
+        self.my_game.make_move((0, 0), (0, 0))
 
     def test_is_in_check(self):
         result = self.my_game.is_in_check("blue")
         self.assertEqual(result, False)
 
         # Move put blue general into check and confirm
-        move_complete = self.my_game.make_move("e9", "f8")
+        move_complete = self.my_game.make_move((4, 8), (5, 7))
         self.assertEqual(move_complete, True)
-        move_complete = self.my_game.make_move("i1", "i2")
+        move_complete = self.my_game.make_move((8, 0), (8, 1))
         self.assertEqual(move_complete, True)
-        self.my_game.make_move("a1", "a1")
-        move_complete = self.my_game.make_move("i2", "f2")
+        self.my_game.make_move((0, 0), (0, 0))
+        move_complete = self.my_game.make_move((8, 1), (5, 1))
         self.assertEqual(move_complete, True)
 
         result = self.my_game.is_in_check("blue")
         self.assertEqual(result, True)
 
         # Try move when general is in check
-        move_complete = self.my_game.make_move("i7", "i6")
+        move_complete = self.my_game.make_move((8, 6), (8, 5))
         self.assertEqual(move_complete, False)
 
     def test_elephant(self):
         # Move blue elephant
-        move_complete = self.my_game.make_move("b10", "d9")
+        move_complete = self.my_game.make_move((1, 9), (3, 8))
         self.assertEqual(move_complete, False)
-        move_complete = self.my_game.make_move("b10", "d7")
+        move_complete = self.my_game.make_move((1, 9), (3, 6))
         self.assertEqual(move_complete, True)
         self.assertEqual(self.my_game._board.get_board_layout()[6][3].get_color(), "blue")
         self.assertIsInstance(self.my_game._board.get_board_layout()[6][3], Elephant)
 
         # Move red elephant
-        move_complete = self.my_game.make_move("b1", "d4")
+        move_complete = self.my_game.make_move((1, 0), (3, 3))
         self.assertEqual(move_complete, True)
 
     def test_chariot(self):
         # Move blue chariot
-        move_complete = self.my_game.make_move("a10", "b10")
+        move_complete = self.my_game.make_move((0, 9), (1, 9))
         self.assertEqual(move_complete, False)
-        move_complete = self.my_game.make_move("a10", "a8")
+        move_complete = self.my_game.make_move((0, 9), (0, 7))
         self.assertEqual(move_complete, True)
         self.assertEqual(self.my_game._board.get_board_layout()[7][0].get_color(), "blue")
         self.assertIsInstance(self.my_game._board.get_board_layout()[7][0], Chariot)
 
         # Move red chariot
-        move_complete = self.my_game.make_move("i1", "i2")
+        move_complete = self.my_game.make_move((8, 0), (8, 1))
         self.assertEqual(move_complete, True)
 
         # Move blue chariot
-        move_complete = self.my_game.make_move("a8", "a6")
+        move_complete = self.my_game.make_move((0, 7), (0, 5))
         self.assertEqual(move_complete, False)
-        move_complete = self.my_game.make_move("a8", "a9")
+        move_complete = self.my_game.make_move((0, 7), (0, 8))
         self.assertEqual(move_complete, True)
 
         # Move red chariot
-        move_complete = self.my_game.make_move("i2", "f2")
+        move_complete = self.my_game.make_move((8, 1), (5, 1))
         self.assertEqual(move_complete, True)
 
         # Move blue chariot
-        move_complete = self.my_game.make_move("a9", "d9")
+        move_complete = self.my_game.make_move((0, 8), (3, 8))
         self.assertEqual(move_complete, True)
 
         # Move red chariot
-        move_complete = self.my_game.make_move("f2", "e1")
+        move_complete = self.my_game.make_move((5, 1), (4, 0))
         self.assertEqual(move_complete, True)
 
         # Move blue chariot
-        move_complete = self.my_game.make_move("d9", "f7")
+        move_complete = self.my_game.make_move((3, 8), (5, 6))
         self.assertEqual(move_complete, False)
 
     def test_grade_scope_test(self):
-        move_complete = self.my_game.make_move("a7", "a6")
+        move_complete = self.my_game.make_move((0, 6), (0, 5))
         self.assertEqual(move_complete, True)
-        move_complete = self.my_game.make_move("i4", "i5")
+        move_complete = self.my_game.make_move((8, 3), (8, 4))
         self.assertEqual(move_complete, True)
-        move_complete = self.my_game.make_move("i7", "i6")
+        move_complete = self.my_game.make_move((8, 6), (8, 5))
         self.assertEqual(move_complete, True)
 
     def test_position_conv(self):
         """Tests the converter from string to index for locations"""
-        i_j_location = self.my_game.translate_space("a1")
+        i_j_location = self.my_game.translate_space((0, 0))
         self.assertEqual((0, 0), i_j_location)
-        i_j_location = self.my_game.translate_space("b1")
+        i_j_location = self.my_game.translate_space((1, 0))
         self.assertEqual((0, 1), i_j_location)
-        i_j_location = self.my_game.translate_space("b6")
+        i_j_location = self.my_game.translate_space((1, 5))
         self.assertEqual((5, 1), i_j_location)
-        # Test for an invalid input
-        i_j_location = self.my_game.translate_space("m11")
-        self.assertEqual((-1, -1), i_j_location)
+
 
     def test_check_scenario_1(self):
         """Tests that check and check mate are properly captured"""
         # Move blue soldier
-        move_complete = self.my_game.make_move("e7", "e6")
+        move_complete = self.my_game.make_move((4, 6), (4, 5))
         self.assertEqual(move_complete, True)
-        move_complete = self.my_game.make_move("a9", "a9")
-        move_complete = self.my_game.make_move("e6", "e5")
+        move_complete = self.my_game.make_move((0, 8), (0, 8))
+        move_complete = self.my_game.make_move((4, 5), (4, 4))
         self.assertEqual(move_complete, True)
-        move_complete = self.my_game.make_move("a9", "a9")
-        move_complete = self.my_game.make_move("e5", "e4")
+        move_complete = self.my_game.make_move((0, 8), (0, 8))
+        move_complete = self.my_game.make_move((4, 4), (4, 3))
         self.assertEqual(move_complete, True)
-        move_complete = self.my_game.make_move("a9", "a9")
-        move_complete = self.my_game.make_move("e4", "e3")
+        move_complete = self.my_game.make_move((0, 8), (0, 8))
+        move_complete = self.my_game.make_move((4, 3), (4, 2))
         self.assertEqual(move_complete, True)
         # Red general in check now - confirm can only make move out of check
-        move_complete = self.my_game.make_move("i4", "i5")
+        move_complete = self.my_game.make_move((8, 3), (8, 4))
         self.assertEqual(move_complete, False)
-        move_complete = self.my_game.make_move("f1", "f2")
+        move_complete = self.my_game.make_move((5, 0), (5, 1))
         self.assertEqual(move_complete, False)
-        move_complete = self.my_game.make_move("f1", "e2")
+        move_complete = self.my_game.make_move((5, 0), (4, 1))
         self.assertEqual(move_complete, False)
 
         # Move General back
-        move_complete = self.my_game.make_move("e2", "e1")
+        move_complete = self.my_game.make_move((4, 1), (4, 0))
         self.assertEqual(move_complete, True)
 
         # Move soldier up again
-        move_complete = self.my_game.make_move("e3", "e2")
+        move_complete = self.my_game.make_move((4, 2), (4, 1))
         self.assertEqual(move_complete, True)
 
         # Capture soldier with guard
-        move_complete = self.my_game.make_move("f1", "e2")
+        move_complete = self.my_game.make_move((5, 0), (4, 1))
         self.assertEqual(move_complete, True)
-        move_complete = self.my_game.make_move("a9", "a9")
-        move_complete = self.my_game.make_move("e2", "f3")
+        move_complete = self.my_game.make_move((0, 8), (0, 8))
+        move_complete = self.my_game.make_move((4, 1), (5, 2))
         self.assertEqual(move_complete, True)
 
     def test_check_scenario_2(self):
         """Tests that check can be blocked"""
         # Move blue chariot
-        move_complete = self.my_game.make_move("i10", "i9")
+        move_complete = self.my_game.make_move((8, 9), (8, 8))
         self.assertEqual(move_complete, True)
-        self.my_game.make_move("a9", "a9")
-        move_complete = self.my_game.make_move("i9", "f9")
+        self.my_game.make_move((0, 8), (0, 8))
+        move_complete = self.my_game.make_move((8, 8), (5, 8))
         self.assertEqual(move_complete, True)
-        self.my_game.make_move("a9", "a9")
-        move_complete = self.my_game.make_move("f9", "f4")
+        self.my_game.make_move((0, 8), (0, 8))
+        move_complete = self.my_game.make_move((5, 8), (5, 3))
         self.assertEqual(move_complete, True)
-        self.my_game.make_move("a9", "a9")
-        move_complete = self.my_game.make_move("f4", "g4")
+        self.my_game.make_move((0, 8), (0, 8))
+        move_complete = self.my_game.make_move((5, 3), (6, 3))
         self.assertEqual(move_complete, True)
-        self.my_game.make_move("a9", "a9")
-        move_complete = self.my_game.make_move("g4", "g2")
+        self.my_game.make_move((0, 8), (0, 8))
+        move_complete = self.my_game.make_move((6, 3), (6, 1))
         self.assertEqual(move_complete, True)
 
         # It should not be able to pass a turn while in check
-        move_complete = self.my_game.make_move("a9", "a9")
+        move_complete = self.my_game.make_move((0, 8), (0, 8))
         self.assertEqual(move_complete, False)
         in_check = self.my_game.is_in_check("red")
         self.assertEqual(in_check, True)
         # Move Guard up to block Chariot
-        move_complete = self.my_game.make_move("f1", "f2")
+        move_complete = self.my_game.make_move((5, 0), (5, 1))
         self.assertEqual(move_complete, True)
         in_check = self.my_game.is_in_check("red")
         self.assertEqual(in_check, False)
 
         # Make sure cannot move into check
-        move_complete = self.my_game.make_move("a9", "a9")
+        move_complete = self.my_game.make_move((0, 8), (0, 8))
         self.assertEqual(move_complete, True)
-        move_complete = self.my_game.make_move("f2", "f1")
+        move_complete = self.my_game.make_move((5, 1), (5, 0))
         self.assertEqual(move_complete, False)
 
     def test_check_mate(self):
         """Tests that check can be blocked"""
         # Move blue chariot
-        move_complete = self.my_game.make_move("i10", "i9")
+        move_complete = self.my_game.make_move((8, 9), (8, 8))
         self.assertEqual(move_complete, True)
-        self.my_game.make_move("a9", "a9")
-        move_complete = self.my_game.make_move("i9", "f9")
+        self.my_game.make_move((0, 8), (0, 8))
+        move_complete = self.my_game.make_move((8, 8), (5, 8))
         self.assertEqual(move_complete, True)
-        self.my_game.make_move("a9", "a9")
-        move_complete = self.my_game.make_move("f9", "f4")
+        self.my_game.make_move((0, 8), (0, 8))
+        move_complete = self.my_game.make_move((5, 8), (5, 3))
         self.assertEqual(move_complete, True)
-        self.my_game.make_move("a9", "a9")
-        move_complete = self.my_game.make_move("f4", "g4")
+        self.my_game.make_move((0, 8), (0, 8))
+        move_complete = self.my_game.make_move((5, 3), (6, 3))
         self.assertEqual(move_complete, True)
-        self.my_game.make_move("a9", "a9")
-        move_complete = self.my_game.make_move("g4", "g2")
+        self.my_game.make_move((0, 8), (0, 8))
+        move_complete = self.my_game.make_move((6, 3), (6, 1))
         self.assertEqual(move_complete, True)
 
         # It should not be able to pass a turn while in check
-        move_complete = self.my_game.make_move("a9", "a9")
+        move_complete = self.my_game.make_move((0, 8), (0, 8))
         self.assertEqual(move_complete, False)
         in_check = self.my_game.is_in_check("red")
         self.assertEqual(in_check, True)
         # Move Guard up to block Chariot
-        move_complete = self.my_game.make_move("f1", "f2")
+        move_complete = self.my_game.make_move((5, 0), (5, 1))
         self.assertEqual(move_complete, True)
         in_check = self.my_game.is_in_check("red")
         self.assertEqual(in_check, False)
 
         # Make sure cannot move into check
-        move_complete = self.my_game.make_move("a9", "a9")
+        move_complete = self.my_game.make_move((0, 8), (0, 8))
         self.assertEqual(move_complete, True)
-        move_complete = self.my_game.make_move("f2", "f1")
+        move_complete = self.my_game.make_move((5, 1), (5, 0))
         self.assertEqual(move_complete, False)
-        move_complete = self.my_game.make_move("e2", "e1")
+        move_complete = self.my_game.make_move((4, 1), (4, 0))
         self.assertEqual(move_complete, True)
-        move_complete = self.my_game.make_move("e7", "e6")
+        move_complete = self.my_game.make_move((4, 6), (4, 5))
         self.assertEqual(move_complete, True)
-        move_complete = self.my_game.make_move("a1", "a1")
+        move_complete = self.my_game.make_move((0, 0), (0, 0))
         self.assertEqual(move_complete, True)
-        move_complete = self.my_game.make_move("e6", "e5")
+        move_complete = self.my_game.make_move((4, 5), (4, 4))
         self.assertEqual(move_complete, True)
-        move_complete = self.my_game.make_move("a1", "a1")
+        move_complete = self.my_game.make_move((0, 0), (0, 0))
         self.assertEqual(move_complete, True)
-        move_complete = self.my_game.make_move("e5", "e4")
+        move_complete = self.my_game.make_move((4, 4), (4, 3))
         self.assertEqual(move_complete, True)
-        move_complete = self.my_game.make_move("a1", "a1")
+        move_complete = self.my_game.make_move((0, 0), (0, 0))
         self.assertEqual(move_complete, True)
-        move_complete = self.my_game.make_move("e4", "e3")
+        move_complete = self.my_game.make_move((4, 3), (4, 2))
         self.assertEqual(move_complete, True)
-        move_complete = self.my_game.make_move("a1", "a1")
+        move_complete = self.my_game.make_move((0, 0), (0, 0))
         self.assertEqual(move_complete, True)
-        move_complete = self.my_game.make_move("h10", "g8")
+        move_complete = self.my_game.make_move((7, 9), (6, 7))
         self.assertEqual(move_complete, True)
-        move_complete = self.my_game.make_move("a1", "a1")
+        move_complete = self.my_game.make_move((0, 0), (0, 0))
         self.assertEqual(move_complete, True)
-        move_complete = self.my_game.make_move("h8", "e8")
+        move_complete = self.my_game.make_move((7, 7), (4, 7))
         self.assertEqual(move_complete, True)
-        move_complete = self.my_game.make_move("e1", "f1")
+        move_complete = self.my_game.make_move((4, 0), (5, 0))
         self.assertEqual(move_complete, True)
-        move_complete = self.my_game.make_move("e3", "f2")
+        move_complete = self.my_game.make_move((4, 2), (5, 1))
         self.assertEqual(move_complete, True)
         in_check = self.my_game.is_in_check("red")
         self.assertEqual(in_check, True)
         game_status = self.my_game.get_game_state()
-        self.assertEqual(game_status, "BLUE_WON")
+        self.assertEqual(game_status, (1, "BLUE_WON"))
 
     def test_board_setup(self):
         """Tests that board initialization is correct"""
@@ -584,7 +581,7 @@ class JanggiGameTest(unittest.TestCase):
         self.assertIsInstance(my_piece, General)
 
     def test_check_space_in_palace(self):
-        """Confirm that the location within the palace is properly captured"""
+        """""Confirm that the location within the palace is properly captured"""
         in_palace = self.my_game._board.check_space_in_palace(0, 0)
         self.assertEqual(in_palace, False)
         in_palace = self.my_game._board.check_space_in_palace(0, 2)
@@ -611,116 +608,116 @@ class JanggiGameTest(unittest.TestCase):
     def test_check_2(self):
         """Test another game"""
         # Blue
-        move_complete = self.my_game.make_move("g7", "g6")
+        move_complete = self.my_game.make_move((6, 6), (6, 5))
         self.assertEqual(move_complete, True)
         # Red
-        move_complete = self.my_game.make_move("h1", "i3")
+        move_complete = self.my_game.make_move((7, 0), (8, 2))
         self.assertEqual(move_complete, True)
         # Blue
-        move_complete = self.my_game.make_move("h8", "h2")
+        move_complete = self.my_game.make_move((7, 7), (7, 1))
         self.assertEqual(move_complete, False)
         # Blue
-        move_complete = self.my_game.make_move("g6", "h6")
+        move_complete = self.my_game.make_move((6, 5), (7, 5))
         self.assertEqual(move_complete, True)
         # Red
-        move_complete = self.my_game.make_move("f1", "f2")
+        move_complete = self.my_game.make_move((5, 0), (5, 1))
         self.assertEqual(move_complete, True)
         # Blue
-        move_complete = self.my_game.make_move("h8", "h4")
+        move_complete = self.my_game.make_move((7, 7), (7, 3))
         self.assertEqual(move_complete, True)
         # Red
-        move_complete = self.my_game.make_move("i3", "h5")
+        move_complete = self.my_game.make_move((8, 2), (7, 4))
         self.assertEqual(move_complete, False)
         # Red
-        move_complete = self.my_game.make_move("i3", "g3")
+        move_complete = self.my_game.make_move((8, 2), (6, 2))
         self.assertEqual(move_complete, False)
         # Red
-        move_complete = self.my_game.make_move("f2", "f3")
+        move_complete = self.my_game.make_move((5, 1), (5, 2))
         self.assertEqual(move_complete, True)
         result = self.my_game.get_game_state()
         self.assertEqual("UNFINISHED", result)
         # Blue
-        move_complete = self.my_game.make_move("c10", "d8")
+        move_complete = self.my_game.make_move((2, 9), (3, 7))
         self.assertEqual(move_complete, True)
         result = self.my_game.get_game_state()
         self.assertEqual("UNFINISHED", result)
         # Red
-        move_complete = self.my_game.make_move("e2", "e1")
+        move_complete = self.my_game.make_move((4, 1), (4, 0))
         self.assertEqual(move_complete, True)
         result = self.my_game.get_game_state()
         self.assertEqual("UNFINISHED", result)
         # Blue
-        move_complete = self.my_game.make_move("h4", "c4")
-        self.assertEqual(move_complete, False)
-        result = self.my_game.get_game_state()
-        self.assertEqual("UNFINISHED", result)
-        # Blue
-        move_complete = self.my_game.make_move("h4", "e4")
-        self.assertEqual(move_complete, True)
-        result = self.my_game.get_game_state()
-        self.assertEqual("UNFINISHED", result)
-        # Red
-        move_complete = self.my_game.make_move("f3", "e4")
+        move_complete = self.my_game.make_move((7, 3), (2, 3))
         self.assertEqual(move_complete, False)
         result = self.my_game.get_game_state()
         self.assertEqual("UNFINISHED", result)
+        # Blue
+        move_complete = self.my_game.make_move((7, 3), (4, 3))
+        self.assertEqual(move_complete, True)
+        result = self.my_game.get_game_state()
+        self.assertEqual("UNFINISHED", result)
         # Red
-        move_complete = self.my_game.make_move("f3", "e3")
+        move_complete = self.my_game.make_move((5, 2), (4, 3))
         self.assertEqual(move_complete, False)
         result = self.my_game.get_game_state()
         self.assertEqual("UNFINISHED", result)
         # Red
-        move_complete = self.my_game.make_move("f3", "f2")
+        move_complete = self.my_game.make_move((5, 2), (4, 2))
+        self.assertEqual(move_complete, False)
+        result = self.my_game.get_game_state()
+        self.assertEqual("UNFINISHED", result)
+        # Red
+        move_complete = self.my_game.make_move((5, 2), (5, 1))
         self.assertEqual(move_complete, True)
         result = self.my_game.get_game_state()
         self.assertEqual("UNFINISHED", result)
         # Blue
-        move_complete = self.my_game.make_move("i10", "i8")
+        move_complete = self.my_game.make_move((8, 9), (8, 7))
         self.assertEqual(move_complete, True)
         result = self.my_game.get_game_state()
         self.assertEqual("UNFINISHED", result)
         # Red
-        move_complete = self.my_game.make_move("g1", "e4")
+        move_complete = self.my_game.make_move((6, 0), (4, 3))
         self.assertEqual(move_complete, True)
         result = self.my_game.get_game_state()
         self.assertEqual("UNFINISHED", result)
         # Blue
-        move_complete = self.my_game.make_move("c7", "c6")
+        move_complete = self.my_game.make_move((2, 6), (2, 5))
         self.assertEqual(move_complete, True)
         result = self.my_game.get_game_state()
         self.assertEqual("UNFINISHED", result)
         # Red
-        move_complete = self.my_game.make_move("b1", "d4")
+        move_complete = self.my_game.make_move((1, 0), (3, 3))
         self.assertEqual(move_complete, True)
         result = self.my_game.get_game_state()
         self.assertEqual("UNFINISHED", result)
         # Blue
-        move_complete = self.my_game.make_move("a7", "b7")
+        move_complete = self.my_game.make_move((0, 6), (1, 6))
         self.assertEqual(move_complete, True)
         result = self.my_game.get_game_state()
         self.assertEqual("UNFINISHED", result)
         # Red
-        move_complete = self.my_game.make_move("i1", "f1")
+        move_complete = self.my_game.make_move((8, 0), (5, 0))
         self.assertEqual(move_complete, True)
         result = self.my_game.get_game_state()
         self.assertEqual("UNFINISHED", result)
         # Blue
-        move_complete = self.my_game.make_move("d10", "d9")
+        move_complete = self.my_game.make_move((3, 9), (3, 8))
         self.assertEqual(move_complete, True)
         result = self.my_game.get_game_state()
         self.assertEqual("UNFINISHED", result)
         # Red
-        move_complete = self.my_game.make_move("f2", "e3")
+        move_complete = self.my_game.make_move((5, 1), (4, 2))
         self.assertEqual(move_complete, True)
         result = self.my_game.get_game_state()
         self.assertEqual("UNFINISHED", result)
         # Blue
-        move_complete = self.my_game.make_move("c6", "c5")
+        move_complete = self.my_game.make_move((2, 5), (2, 4))
         self.assertEqual(move_complete, True)
         result = self.my_game.get_game_state()
         self.assertEqual("UNFINISHED", result)
         # Red
-        move_complete = self.my_game.make_move("f1", "f10")
+        move_complete = self.my_game.make_move((5, 0), (5, 9))
         self.assertEqual(move_complete, True)
         result = self.my_game.get_game_state()
         self.assertEqual("UNFINISHED", result)
@@ -729,7 +726,7 @@ class JanggiGameTest(unittest.TestCase):
         self.assertEqual(False, red_check)
         self.assertEqual(True, blue_check)
         # Blue
-        move_complete = self.my_game.make_move("e9", "f8")
+        move_complete = self.my_game.make_move((4, 8), (5, 7))
         self.assertEqual(move_complete, False)
         result = self.my_game.get_game_state()
         self.assertEqual("UNFINISHED", result)
@@ -738,7 +735,7 @@ class JanggiGameTest(unittest.TestCase):
         self.assertEqual(False, red_check)
         self.assertEqual(True, blue_check)
         # Blue
-        move_complete = self.my_game.make_move("a9", "a9")
+        move_complete = self.my_game.make_move((0, 8), (0, 8))
         self.assertEqual(move_complete, False)
         result = self.my_game.get_game_state()
         self.assertEqual("UNFINISHED", result)
@@ -747,7 +744,7 @@ class JanggiGameTest(unittest.TestCase):
         self.assertEqual(False, red_check)
         self.assertEqual(True, blue_check)
         # Blue
-        move_complete = self.my_game.make_move("e9", "e8")
+        move_complete = self.my_game.make_move((4, 8), (4, 7))
         self.assertEqual(move_complete, True)
         result = self.my_game.get_game_state()
         self.assertEqual("UNFINISHED", result)
@@ -756,7 +753,7 @@ class JanggiGameTest(unittest.TestCase):
         self.assertEqual(False, red_check)
         self.assertEqual(False, blue_check)
         # Red
-        move_complete = self.my_game.make_move("h3", "h10")
+        move_complete = self.my_game.make_move((7, 2), (7, 9))
         self.assertEqual(move_complete, True)
         result = self.my_game.get_game_state()
         self.assertEqual("UNFINISHED", result)
@@ -765,7 +762,7 @@ class JanggiGameTest(unittest.TestCase):
         self.assertEqual(False, red_check)
         self.assertEqual(False, blue_check)
         # Blue
-        move_complete = self.my_game.make_move("i8", "f8")
+        move_complete = self.my_game.make_move((8, 7), (5, 7))
         self.assertEqual(move_complete, True)
         result = self.my_game.get_game_state()
         self.assertEqual("UNFINISHED", result)
@@ -775,7 +772,7 @@ class JanggiGameTest(unittest.TestCase):
         self.assertEqual(False, blue_check)
         self.assertEqual(False, blue_check)
         # Red
-        move_complete = self.my_game.make_move("e4", "h6")
+        move_complete = self.my_game.make_move((4, 3), (7, 5))
         self.assertEqual(move_complete, True)
         result = self.my_game.get_game_state()
         self.assertEqual("UNFINISHED", result)
@@ -784,7 +781,7 @@ class JanggiGameTest(unittest.TestCase):
         self.assertEqual(False, red_check)
         self.assertEqual(True, blue_check)
         # Blue
-        move_complete = self.my_game.make_move("e7", "f7")
+        move_complete = self.my_game.make_move((4, 6), (5, 6))
         self.assertEqual(move_complete, True)
         result = self.my_game.get_game_state()
         self.assertEqual("UNFINISHED", result)
@@ -793,7 +790,7 @@ class JanggiGameTest(unittest.TestCase):
         self.assertEqual(False, red_check)
         self.assertEqual(False, blue_check)
         # Red
-        move_complete = self.my_game.make_move("d4", "b7")
+        move_complete = self.my_game.make_move((3, 3), (1, 6))
         self.assertEqual(move_complete, True)
         result = self.my_game.get_game_state()
         self.assertEqual("UNFINISHED", result)
@@ -802,7 +799,7 @@ class JanggiGameTest(unittest.TestCase):
         self.assertEqual(False, red_check)
         self.assertEqual(False, blue_check)
         # Blue
-        move_complete = self.my_game.make_move("d8", "b7")
+        move_complete = self.my_game.make_move((3, 7), (1, 6))
         self.assertEqual(move_complete, True)
         result = self.my_game.get_game_state()
         self.assertEqual("UNFINISHED", result)
@@ -811,7 +808,7 @@ class JanggiGameTest(unittest.TestCase):
         self.assertEqual(False, red_check)
         self.assertEqual(False, blue_check)
         # Red
-        move_complete = self.my_game.make_move("b3", "f3")
+        move_complete = self.my_game.make_move((1, 2), (5, 2))
         self.assertEqual(move_complete, True)
         result = self.my_game.get_game_state()
         self.assertEqual("UNFINISHED", result)
@@ -820,7 +817,7 @@ class JanggiGameTest(unittest.TestCase):
         self.assertEqual(False, red_check)
         self.assertEqual(False, blue_check)
         # Blue
-        move_complete = self.my_game.make_move("b8", "b1")
+        move_complete = self.my_game.make_move((1, 7), (1, 0))
         self.assertEqual(move_complete, True)
         result = self.my_game.get_game_state()
         self.assertEqual("UNFINISHED", result)
@@ -829,7 +826,7 @@ class JanggiGameTest(unittest.TestCase):
         self.assertEqual(False, red_check)
         self.assertEqual(False, blue_check)
         # Red
-        move_complete = self.my_game.make_move("f3", "f8")
+        move_complete = self.my_game.make_move((5, 2), (5, 7))
         self.assertEqual(move_complete, True)
         result = self.my_game.get_game_state()
         self.assertEqual("UNFINISHED", result)
@@ -838,7 +835,7 @@ class JanggiGameTest(unittest.TestCase):
         self.assertEqual(False, red_check)
         self.assertEqual(False, blue_check)
         # Blue
-        move_complete = self.my_game.make_move("e8", "f8")
+        move_complete = self.my_game.make_move((4, 7), (5, 7))
         self.assertEqual(move_complete, False)
         result = self.my_game.get_game_state()
         self.assertEqual("UNFINISHED", result)
@@ -847,7 +844,7 @@ class JanggiGameTest(unittest.TestCase):
         self.assertEqual(False, red_check)
         self.assertEqual(False, blue_check)
         # Blue
-        move_complete = self.my_game.make_move("b7", "a5")
+        move_complete = self.my_game.make_move((1, 6), (0, 4))
         self.assertEqual(move_complete, True)
         result = self.my_game.get_game_state()
         self.assertEqual("UNFINISHED", result)
@@ -856,7 +853,7 @@ class JanggiGameTest(unittest.TestCase):
         self.assertEqual(False, red_check)
         self.assertEqual(False, blue_check)
         # Red
-        move_complete = self.my_game.make_move("f10", "f9")
+        move_complete = self.my_game.make_move((5, 9), (5, 8))
         self.assertEqual(move_complete, True)
         result = self.my_game.get_game_state()
         self.assertEqual("UNFINISHED", result)
@@ -865,7 +862,7 @@ class JanggiGameTest(unittest.TestCase):
         self.assertEqual(False, red_check)
         self.assertEqual(True, blue_check)
         # Blue
-        move_complete = self.my_game.make_move("e8", "f9")
+        move_complete = self.my_game.make_move((4, 7), (5, 8))
         self.assertEqual(move_complete, False)
         result = self.my_game.get_game_state()
         self.assertEqual("UNFINISHED", result)
@@ -874,7 +871,7 @@ class JanggiGameTest(unittest.TestCase):
         self.assertEqual(False, red_check)
         self.assertEqual(True, blue_check)
         # Blue
-        move_complete = self.my_game.make_move("e8", "d8")
+        move_complete = self.my_game.make_move((4, 7), (3, 7))
         self.assertEqual(move_complete, True)
         result = self.my_game.get_game_state()
         self.assertEqual("UNFINISHED", result)
@@ -883,7 +880,7 @@ class JanggiGameTest(unittest.TestCase):
         self.assertEqual(False, red_check)
         self.assertEqual(False, blue_check)
         # Red
-        move_complete = self.my_game.make_move("f8", "f7")
+        move_complete = self.my_game.make_move((5, 7), (5, 6))
         self.assertEqual(move_complete, False)
         result = self.my_game.get_game_state()
         self.assertEqual("UNFINISHED", result)
@@ -892,7 +889,7 @@ class JanggiGameTest(unittest.TestCase):
         self.assertEqual(False, red_check)
         self.assertEqual(False, blue_check)
         # Red
-        move_complete = self.my_game.make_move("f8", "f3")
+        move_complete = self.my_game.make_move((5, 7), (5, 2))
         self.assertEqual(move_complete, True)
         result = self.my_game.get_game_state()
         self.assertEqual("UNFINISHED", result)
@@ -901,7 +898,7 @@ class JanggiGameTest(unittest.TestCase):
         self.assertEqual(False, red_check)
         self.assertEqual(False, blue_check)
         # Blue
-        move_complete = self.my_game.make_move("f7", "f6")
+        move_complete = self.my_game.make_move((5, 6), (5, 5))
         self.assertEqual(move_complete, True)
         result = self.my_game.get_game_state()
         self.assertEqual("UNFINISHED", result)
@@ -910,7 +907,7 @@ class JanggiGameTest(unittest.TestCase):
         self.assertEqual(False, red_check)
         self.assertEqual(False, blue_check)
         # Red
-        move_complete = self.my_game.make_move("f3", "d3")
+        move_complete = self.my_game.make_move((5, 2), (3, 2))
         self.assertEqual(move_complete, True)
         result = self.my_game.get_game_state()
         self.assertEqual("UNFINISHED", result)
@@ -919,7 +916,7 @@ class JanggiGameTest(unittest.TestCase):
         self.assertEqual(False, red_check)
         self.assertEqual(False, blue_check)
         # Blue
-        move_complete = self.my_game.make_move("i7", "i6")
+        move_complete = self.my_game.make_move((8, 6), (8, 5))
         self.assertEqual(move_complete, True)
         result = self.my_game.get_game_state()
         self.assertEqual("UNFINISHED", result)
@@ -928,7 +925,7 @@ class JanggiGameTest(unittest.TestCase):
         self.assertEqual(False, red_check)
         self.assertEqual(False, blue_check)
         # Red
-        move_complete = self.my_game.make_move("c4", "d4")
+        move_complete = self.my_game.make_move((2, 3), (3, 3))
         self.assertEqual(move_complete, True)
         result = self.my_game.get_game_state()
         self.assertEqual("UNFINISHED", result)
@@ -937,7 +934,7 @@ class JanggiGameTest(unittest.TestCase):
         self.assertEqual(False, red_check)
         self.assertEqual(True, blue_check)
         # Blue
-        move_complete = self.my_game.make_move("c5", "d5")
+        move_complete = self.my_game.make_move((2, 4), (3, 4))
         self.assertEqual(move_complete, True)
         result = self.my_game.get_game_state()
         self.assertEqual("UNFINISHED", result)
@@ -946,7 +943,7 @@ class JanggiGameTest(unittest.TestCase):
         self.assertEqual(False, red_check)
         self.assertEqual(False, blue_check)
         # Red
-        move_complete = self.my_game.make_move("d4", "d5")
+        move_complete = self.my_game.make_move((3, 3), (3, 4))
         self.assertEqual(move_complete, True)
         result = self.my_game.get_game_state()
         self.assertEqual("UNFINISHED", result)
@@ -955,7 +952,7 @@ class JanggiGameTest(unittest.TestCase):
         self.assertEqual(False, red_check)
         self.assertEqual(True, blue_check)
         # Blue
-        move_complete = self.my_game.make_move("b10", "d7")
+        move_complete = self.my_game.make_move((1, 9), (3, 6))
         self.assertEqual(move_complete, True)
         result = self.my_game.get_game_state()
         self.assertEqual("UNFINISHED", result)
@@ -964,7 +961,7 @@ class JanggiGameTest(unittest.TestCase):
         self.assertEqual(False, red_check)
         self.assertEqual(False, blue_check)
         # Red
-        move_complete = self.my_game.make_move("d5", "d6")
+        move_complete = self.my_game.make_move((3, 4), (3, 5))
         self.assertEqual(move_complete, True)
         result = self.my_game.get_game_state()
         self.assertEqual("UNFINISHED", result)
@@ -973,7 +970,7 @@ class JanggiGameTest(unittest.TestCase):
         self.assertEqual(False, red_check)
         self.assertEqual(False, blue_check)
         # Blue
-        move_complete = self.my_game.make_move("b1", "d1")
+        move_complete = self.my_game.make_move((1, 0), (3, 0))
         self.assertEqual(move_complete, True)
         result = self.my_game.get_game_state()
         self.assertEqual("UNFINISHED", result)
@@ -982,7 +979,7 @@ class JanggiGameTest(unittest.TestCase):
         self.assertEqual(False, red_check)
         self.assertEqual(False, blue_check)
         # Red
-        move_complete = self.my_game.make_move("d6", "d7")
+        move_complete = self.my_game.make_move((3, 5), (3, 6))
         self.assertEqual(move_complete, True)
         result = self.my_game.get_game_state()
         self.assertEqual("RED_WON", result)
@@ -991,7 +988,7 @@ class JanggiGameTest(unittest.TestCase):
         self.assertEqual(False, red_check)
         self.assertEqual(True, blue_check)
         # Blue
-        move_complete = self.my_game.make_move("b1", "b1")
+        move_complete = self.my_game.make_move((1, 0), (1, 0))
         self.assertEqual(move_complete, False)
         result = self.my_game.get_game_state()
         self.assertEqual("RED_WON", result)
