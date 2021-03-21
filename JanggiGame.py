@@ -17,6 +17,7 @@ class JanggiPiece:
     subclasses interact with the JanggiBoard to assist in determining whether or
     not moves are valid.
     """
+
     def __init__(self, color: str):
         """
         Initializes a JanggiPiece with color
@@ -100,6 +101,7 @@ class JanggiPiece:
 
 class General(JanggiPiece):
     """This is the class for the general piece. It inherits from JanggiPiece"""
+
     def __init__(self, color: str):
         """Initializes the General piece with color"""
         super().__init__(color)
@@ -128,14 +130,24 @@ class General(JanggiPiece):
         else:
             palace_range = [7, 10]
 
-        # Iterate over the palace spaces
-        for row in range(palace_range[0], palace_range[1]):
-            for column in range(3, 6):
-                # Check if the space in question is only a move of 1 away
-                if abs(row - current_position[0]) < 2 and abs(column - current_position[1]) < 2:
-                    # Make sure the space is empty or an enemy piece
-                    if board.check_empty_or_enemy_or_off_board(row, column, current_side):
-                        valid_move_list.append((row, column))
+        # The king can only move diagonally if not in the North / South / East / West spot in castle
+        if board.check_special_palace_move(current_position[0], current_position[1]):
+            # Iterate over the palace spaces
+            for row in range(palace_range[0], palace_range[1]):
+                for column in range(3, 6):
+                    # Check if the space in question is only a move of 1 away
+                    if abs(row - current_position[0]) < 2 and abs(column - current_position[1]) < 2:
+                        # Make sure the space is empty or an enemy piece
+                        if board.check_empty_or_enemy_or_off_board(row, column, current_side):
+                            valid_move_list.append((row, column))
+        # Check moves in standard four directions
+        else:
+            move_directions = [(1, 0), (-1, 0), (0, 1), (0, -1)]
+            for move_row, move_column in move_directions:
+                if board.check_empty_or_enemy_or_off_board(current_position[0] + move_row, current_position[1] +
+                                                                                           move_column, current_side):
+                    if board.check_space_in_palace(current_position[0] + move_row, current_position[1] + move_column):
+                        valid_move_list.append((current_position[0] + move_row, current_position[1] + move_column))
 
         return valid_move_list
 
@@ -144,9 +156,9 @@ class General(JanggiPiece):
         return self._piece_type
 
 
-
 class Guard(JanggiPiece):
     """This is the class for the Guard piece. It inherits from JanggiPiece"""
+
     def __init__(self, color: str):
         """Initializes the Guard piece with color"""
         super().__init__(color)
@@ -175,14 +187,25 @@ class Guard(JanggiPiece):
         else:
             palace_range = [7, 10]
 
-        # Iterate over the palace spaces
-        for row in range(palace_range[0], palace_range[1]):
-            for column in range(3, 6):
-                # Check if the space in question is only a move of 1 away
-                if abs(row - current_position[0]) < 2 and abs(column - current_position[1]) < 2:
-                    # Make sure the space is empty or an enemy piece
-                    if board.check_empty_or_enemy_or_off_board(row, column, current_side):
-                        valid_move_list.append((row, column))
+        # The Guard can only move diagonally if not in the North / South / East / West spot in castle
+        if board.check_special_palace_move(current_position[0], current_position[1]):
+            # Iterate over the palace spaces
+            for row in range(palace_range[0], palace_range[1]):
+                for column in range(3, 6):
+                    # Check if the space in question is only a move of 1 away
+                    if abs(row - current_position[0]) < 2 and abs(column - current_position[1]) < 2:
+                        # Make sure the space is empty or an enemy piece
+                        if board.check_empty_or_enemy_or_off_board(row, column, current_side):
+                            valid_move_list.append((row, column))
+
+        # Check moves in standard four directions
+        else:
+            move_directions = [(1, 0), (-1, 0), (0, 1), (0, -1)]
+            for move_row, move_column in move_directions:
+                if board.check_empty_or_enemy_or_off_board(current_position[0] + move_row, current_position[1] +
+                                                                                           move_column, current_side):
+                    if board.check_space_in_palace(current_position[0] + move_row, current_position[1] + move_column):
+                        valid_move_list.append((current_position[0] + move_row, current_position[1] + move_column))
 
         return valid_move_list
 
@@ -193,6 +216,7 @@ class Guard(JanggiPiece):
 
 class Horse(JanggiPiece):
     """This is the class for the Horse piece. It inherits from JanggiPiece"""
+
     def __init__(self, color: str):
         """Initializes the Horse piece with color"""
         super().__init__(color)
@@ -214,14 +238,14 @@ class Horse(JanggiPiece):
         valid_move_list = []
         current_position = self.get_location()
         current_side = self.get_color()
-        moves_and_spaces = [[(1, 0), (2, 1)],       # South East
-                            [(1, 0), (2, -1)],      # South West
-                            [(-1, 0), (-2, 1)],     # North East
-                            [(-1, 0), (-2, -1)],    # North West
-                            [(0, -1), (1, -2)],     # West South
-                            [(0, -1), (-1, -2)],    # West North
-                            [(0, 1), (1, 2)],       # East South
-                            [(0, 1), (-1, 2)]]      # East North
+        moves_and_spaces = [[(1, 0), (2, 1)],  # South East
+                            [(1, 0), (2, -1)],  # South West
+                            [(-1, 0), (-2, 1)],  # North East
+                            [(-1, 0), (-2, -1)],  # North West
+                            [(0, -1), (1, -2)],  # West South
+                            [(0, -1), (-1, -2)],  # West North
+                            [(0, 1), (1, 2)],  # East South
+                            [(0, 1), (-1, 2)]]  # East North
 
         # Go through each possible move
         for move_direction in moves_and_spaces:
@@ -233,7 +257,8 @@ class Horse(JanggiPiece):
                 target_position = current_position[0] + row_move, current_position[1] + column_move
                 # If it's the target space of the move, check if it's empty or enemy
                 if (row_move, column_move) == move_direction[-1]:
-                    if not board.check_empty_or_enemy_or_off_board(target_position[0], target_position[1], current_side):
+                    if not board.check_empty_or_enemy_or_off_board(target_position[0], target_position[1],
+                                                                   current_side):
                         valid_move = False
                 # Check if the space is empty if the piece is just moving through
                 else:
@@ -252,6 +277,7 @@ class Horse(JanggiPiece):
 
 class Elephant(JanggiPiece):
     """This is the class for the Elephant piece. It inherits from JanggiPiece"""
+
     def __init__(self, color: str):
         """Initializes the Elephant piece with color"""
         super().__init__(color)
@@ -273,14 +299,14 @@ class Elephant(JanggiPiece):
         valid_move_list = []
         current_position = self.get_location()
         current_side = self.get_color()
-        moves_and_spaces = [[(1, 0), (2, 1), (3, 2)],       # South East
-                            [(1, 0), (2, -1), (3, -2)],      # South West
-                            [(-1, 0), (-2, 1), (-3, 2)],     # North East
-                            [(-1, 0), (-2, -1), (-3, -2)],    # North West
-                            [(0, -1), (1, -2), (2, -3)],     # West South
-                            [(0, -1), (-1, -2), (-2, -3)],    # West North
-                            [(0, 1), (1, 2), (2, 3)],       # East South
-                            [(0, 1), (-1, 2), (-2, 3)]]      # East North
+        moves_and_spaces = [[(1, 0), (2, 1), (3, 2)],  # South East
+                            [(1, 0), (2, -1), (3, -2)],  # South West
+                            [(-1, 0), (-2, 1), (-3, 2)],  # North East
+                            [(-1, 0), (-2, -1), (-3, -2)],  # North West
+                            [(0, -1), (1, -2), (2, -3)],  # West South
+                            [(0, -1), (-1, -2), (-2, -3)],  # West North
+                            [(0, 1), (1, 2), (2, 3)],  # East South
+                            [(0, 1), (-1, 2), (-2, 3)]]  # East North
 
         # Go through each possible move
         for move_direction in moves_and_spaces:
@@ -292,7 +318,8 @@ class Elephant(JanggiPiece):
                 target_position = current_position[0] + row_move, current_position[1] + column_move
                 # If it's the target space of the move, check if it's empty or enemy
                 if (row_move, column_move) == move_direction[-1]:
-                    if not board.check_empty_or_enemy_or_off_board(target_position[0], target_position[1], current_side):
+                    if not board.check_empty_or_enemy_or_off_board(target_position[0], target_position[1],
+                                                                   current_side):
                         valid_move = False
                 # Check if the space is empty if the piece is just moving through
                 else:
@@ -310,6 +337,7 @@ class Elephant(JanggiPiece):
 
 class Chariot(JanggiPiece):
     """This is the class for the Chariot piece. It inherits from JanggiPiece"""
+
     def __init__(self, color: str):
         """Initializes the Chariot piece with color"""
         super().__init__(color)
@@ -331,10 +359,10 @@ class Chariot(JanggiPiece):
         valid_move_list = []
         current_position = self.get_location()
         current_side = self.get_color()
-        moves_directions = [(1, 0),     # South
-                            (-1, 0),    # North
-                            (0, 1),     # East
-                            (0, -1)]    # West
+        moves_directions = [(1, 0),  # South
+                            (-1, 0),  # North
+                            (0, 1),  # East
+                            (0, -1)]  # West
 
         # Check each move direction
         for row_move, column_move in moves_directions:
@@ -349,7 +377,7 @@ class Chariot(JanggiPiece):
                 target_position = target_position[0] + row_move, target_position[1] + column_move
 
         # Check for valid moves in the place
-        if board.check_space_in_palace(current_position[0], current_position[1]):
+        if board.check_special_palace_move(current_position[0], current_position[1]):
             moves_directions = [(1, 1),  # South East
                                 (-1, 1),  # North East
                                 (-1, -1),  # North West
@@ -375,6 +403,7 @@ class Chariot(JanggiPiece):
 
 class Cannon(JanggiPiece):
     """This is the class for the Cannon piece. It inherits from JanggiPiece"""
+
     def __init__(self, color: str):
         """Initializes the Cannon piece with color"""
         super().__init__(color)
@@ -396,10 +425,10 @@ class Cannon(JanggiPiece):
         valid_move_list = []
         current_position = self.get_location()
         current_side = self.get_color()
-        moves_directions = [(1, 0),     # South
-                            (-1, 0),    # North
-                            (0, 1),     # East
-                            (0, -1)]    # West
+        moves_directions = [(1, 0),  # South
+                            (-1, 0),  # North
+                            (0, 1),  # East
+                            (0, -1)]  # West
 
         # Check each move direction
         for row_move, column_move in moves_directions:
@@ -494,6 +523,7 @@ class Cannon(JanggiPiece):
 
 class Soldier(JanggiPiece):
     """This is the class for the Soldier piece. It inherits from JanggiPiece"""
+
     def __init__(self, color: str):
         """Initializes the Soldier piece with color"""
         super().__init__(color)
@@ -530,11 +560,11 @@ class Soldier(JanggiPiece):
                 valid_move_list.append(target_position)
 
         # Check for valid moves in the palace
-        if board.check_space_in_palace(current_position[0], current_position[1]):
+        if board.check_special_palace_move(current_position[0], current_position[1]):
             move_list = [(move_direction, -1), (move_direction, 1)]
             for move_row, move_column in move_list:
                 target_position = current_position[0] + move_row, current_position[1] + move_column
-            # Check if the space to be moved to is in the palace
+                # Check if the space to be moved to is in the palace
                 if board.check_space_in_palace(target_position[0], target_position[1]):
                     # Confirm the space is empty or contains an enemy piece
                     if board.check_empty_or_enemy_or_off_board(target_position[0], target_position[1], current_side):
@@ -550,7 +580,8 @@ class Soldier(JanggiPiece):
 
 class JanggiBoard:
     """The class that represents the board of the game"""
-    def __init__(self, spaces: list=None):
+
+    def __init__(self, spaces: list = None):
         """Initializes the board with a blank slate"""
         if spaces is None:
             self._spaces = [[None for x in range(0, 9)] for x in range(0, 10)]
@@ -586,6 +617,22 @@ class JanggiBoard:
         :return: 10 x 9 matrix of spaces
         """
         return self._spaces
+
+    @staticmethod
+    def check_special_palace_move(row: int, column: int) -> bool:
+        """
+        Checks whether the piece is in a space that will require checking for diagnol moves
+        :param row: Row of space to check
+        :param column: Column of space to check
+        :return: True if a special move is possible
+        """
+        current_position = row, column
+        if current_position != (1, 3) and current_position != (1, 5) and current_position != (0, 4) and \
+                current_position != (2, 4) and current_position != (8, 3) and current_position != (8, 5) and \
+                current_position != (9, 4) and current_position != (7, 4):
+            return True
+        else:
+            return False
 
     def get_space_info(self, row: int, column: int) -> JanggiPiece:
         """
@@ -670,7 +717,6 @@ class JanggiBoard:
         else:
             return False
 
-
     @staticmethod
     def check_location_on_board(row: int, column: int) -> bool:
         """
@@ -688,6 +734,7 @@ class JanggiBoard:
 
 class Side:
     """This class represents one of the two sides of the game"""
+
     def __init__(self, color: str):
         """
         Sets the sides color and creates the piece objects for that side
@@ -764,6 +811,7 @@ class JanggiGame:
     get a list of pieces on each side and test when a move can be made by the
     side.
     """
+
     def __init__(self):
         """
         Initializes the Janggi game board, sets up the board, and sets up
@@ -794,7 +842,7 @@ class JanggiGame:
         """
         self._game_state = new_state
 
-    def is_in_check(self, side: str, board: JanggiBoard=None):
+    def is_in_check(self, side: str, board: JanggiBoard = None):
         """
         Determines whether or not the specified side is in check.
         :param side: The side to check for check status ("red" or "blue"
@@ -985,35 +1033,35 @@ class JanggiGame:
         """
         list_of_pieces = side.get_pieces(False)
         if side.get_color() == "red":
-            side.move_piece(self._board, (1, 4), list_of_pieces[0])    # General
-            side.move_piece(self._board, (0, 3), list_of_pieces[1])    # Guards
+            side.move_piece(self._board, (1, 4), list_of_pieces[0])  # General
+            side.move_piece(self._board, (0, 3), list_of_pieces[1])  # Guards
             side.move_piece(self._board, (0, 5), list_of_pieces[2])
-            side.move_piece(self._board, (0, 2), list_of_pieces[3])    # Horses
+            side.move_piece(self._board, (0, 2), list_of_pieces[3])  # Horses
             side.move_piece(self._board, (0, 7), list_of_pieces[4])
-            side.move_piece(self._board, (0, 1), list_of_pieces[5])    # Elephants
+            side.move_piece(self._board, (0, 1), list_of_pieces[5])  # Elephants
             side.move_piece(self._board, (0, 6), list_of_pieces[6])
-            side.move_piece(self._board, (0, 0), list_of_pieces[7])    # Chariots
+            side.move_piece(self._board, (0, 0), list_of_pieces[7])  # Chariots
             side.move_piece(self._board, (0, 8), list_of_pieces[8])
-            side.move_piece(self._board, (2, 1), list_of_pieces[9])    # Cannons
+            side.move_piece(self._board, (2, 1), list_of_pieces[9])  # Cannons
             side.move_piece(self._board, (2, 7), list_of_pieces[10])
-            side.move_piece(self._board, (3, 0), list_of_pieces[11])   # Soldiers
+            side.move_piece(self._board, (3, 0), list_of_pieces[11])  # Soldiers
             side.move_piece(self._board, (3, 2), list_of_pieces[12])
             side.move_piece(self._board, (3, 4), list_of_pieces[13])
             side.move_piece(self._board, (3, 6), list_of_pieces[14])
             side.move_piece(self._board, (3, 8), list_of_pieces[15])
         else:
-            side.move_piece(self._board, (8, 4), list_of_pieces[0])    # General
-            side.move_piece(self._board, (9, 3), list_of_pieces[1])    # Guards
+            side.move_piece(self._board, (8, 4), list_of_pieces[0])  # General
+            side.move_piece(self._board, (9, 3), list_of_pieces[1])  # Guards
             side.move_piece(self._board, (9, 5), list_of_pieces[2])
-            side.move_piece(self._board, (9, 2), list_of_pieces[3])    # Horses
+            side.move_piece(self._board, (9, 2), list_of_pieces[3])  # Horses
             side.move_piece(self._board, (9, 7), list_of_pieces[4])
-            side.move_piece(self._board, (9, 1), list_of_pieces[5])    # Elephants
+            side.move_piece(self._board, (9, 1), list_of_pieces[5])  # Elephants
             side.move_piece(self._board, (9, 6), list_of_pieces[6])
-            side.move_piece(self._board, (9, 0), list_of_pieces[7])    # Chariots
+            side.move_piece(self._board, (9, 0), list_of_pieces[7])  # Chariots
             side.move_piece(self._board, (9, 8), list_of_pieces[8])
-            side.move_piece(self._board, (7, 1), list_of_pieces[9])    # Cannons
+            side.move_piece(self._board, (7, 1), list_of_pieces[9])  # Cannons
             side.move_piece(self._board, (7, 7), list_of_pieces[10])
-            side.move_piece(self._board, (6, 0), list_of_pieces[11])   # Soldiers
+            side.move_piece(self._board, (6, 0), list_of_pieces[11])  # Soldiers
             side.move_piece(self._board, (6, 2), list_of_pieces[12])
             side.move_piece(self._board, (6, 4), list_of_pieces[13])
             side.move_piece(self._board, (6, 6), list_of_pieces[14])
@@ -1079,4 +1127,3 @@ class JanggiGame:
             return self._blue_side
         else:
             return self._red_side
-
