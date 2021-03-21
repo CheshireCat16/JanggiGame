@@ -626,6 +626,9 @@ class JanggiBoard:
         # Columns 0 - 2 and 6 to 8 are not in the palace
         if column < 3 or column > 5:
             return False
+        # Rows less than 0 and greater than 9 are off the board
+        elif row < -1 or row > 9:
+            return False
         # Only rows less than 3 or greater than 6 are in the palace
         elif row < 3 or row > 6:
             return True
