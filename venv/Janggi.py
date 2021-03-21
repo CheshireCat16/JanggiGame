@@ -10,11 +10,12 @@ class Janggi:
         """Initialized the game"""
         self._running = True
         self._display_surf = None
-        self._size = self.weight, self.height = 833, 927
+        self._size = self.weight, self.height = 1133, 927
         self._JanggiGame = JanggiGame()
         self._piece_images = {"blue":{}, "red": {}}
         self._clicked_piece = None
         self._valid_move_img = None
+        self._status_bar_img = None
 
     def on_init(self):
         """
@@ -42,6 +43,7 @@ class Janggi:
         self._piece_images["red"]["Horse"] = pygame.image.load(r"C:\Users\John\OneDrive\Documents\Python Programs\JanggiGame\JanggiPieces\Red_Ma.png").convert()
         self._piece_images["red"]["Soldier"] = pygame.image.load(r"C:\Users\John\OneDrive\Documents\Python Programs\JanggiGame\JanggiPieces\Red_Byung.png").convert()
         self._valid_move_img = pygame.image.load(r"C:\Users\John\OneDrive\Documents\Python Programs\JanggiGame\JanggiPieces\ValidMove.png").convert()
+        self._status_bar_img = pygame.image.load(r"C:\Users\John\OneDrive\Documents\Python Programs\JanggiGame\JanggiPieces\StatusBar.png").convert()
 
     def on_event(self, event):
         """Handles game events"""
@@ -59,6 +61,7 @@ class Janggi:
         """Shows the current state of the game board"""
         # Display the game board
         self._display_surf.blit(self._board_image, (0, 0))
+        self._display_surf.blit(self._status_bar_img, (834, 0))
 
         # Loop through board and put pieces in the correct location
         current_board = self._JanggiGame.get_board().get_board_layout()
@@ -127,7 +130,7 @@ class Janggi:
                         click_box = 32
                 # Click box size is 42 if location is empty
                 else:
-                    click_box = 42
+                    click_box = 47
 
                 # Check whether or not the click is within the click box and exit for
                 if distance < click_box:
