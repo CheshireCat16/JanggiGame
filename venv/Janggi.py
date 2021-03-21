@@ -16,14 +16,19 @@ class Janggi:
         self._clicked_piece = None
         self._valid_move_img = None
         self._status_bar_img = None
+        self._current_side_font = None
+        self._blue_side_text = None
+        self._red_side_text = None
 
     def on_init(self):
         """
         Initialized pygame models and setup the displa window
         Note: Display window size equal to board game size
         """
+        # Start up pygame and the game display
         pygame.init()
         self._display_surf = pygame.display.set_mode(self._size, pygame.HWSURFACE | pygame.DOUBLEBUF)
+        pygame.display.set_caption("Janggi - Korean Chess")
         self._running = True
 
         # Load images of board and game pieces
@@ -44,6 +49,12 @@ class Janggi:
         self._piece_images["red"]["Soldier"] = pygame.image.load(r"C:\Users\John\OneDrive\Documents\Python Programs\JanggiGame\JanggiPieces\Red_Byung.png").convert()
         self._valid_move_img = pygame.image.load(r"C:\Users\John\OneDrive\Documents\Python Programs\JanggiGame\JanggiPieces\ValidMove.png").convert()
         self._status_bar_img = pygame.image.load(r"C:\Users\John\OneDrive\Documents\Python Programs\JanggiGame\JanggiPieces\StatusBar.png").convert()
+
+        # Set up font to show current player and menu
+        pygame.font.init()
+        self._current_side_font = pygame.font.SysFont("Sans", 40)
+        self._blue_side_text = self._current_side_font.render("Blue Turn", False, (0, 0, 255))
+        self._red_side_text = self._current_side_font.render("Red Turn", False, (255, 0, 0))
 
     def on_event(self, event):
         """Handles game events"""
@@ -78,6 +89,12 @@ class Janggi:
             valid_moves = self._clicked_piece.find_valid_moves(self._JanggiGame.get_board())
             for row, column in valid_moves:
                 self._display_surf.blit(self._valid_move_img, (column * 94 - 20, row * 94 - 13))
+
+        # Show text for current side
+        if self._JanggiGame.get_current_side().get_color() == "blue":
+            self._display_surf.blit(self._blue_side_text, (900, 205))
+        else:
+            self._display_surf.blit(self._red_side_text, (900, 205))
 
 
         # Render the board
