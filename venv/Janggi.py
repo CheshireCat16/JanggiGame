@@ -127,6 +127,8 @@ class Janggi:
         """Handles a click on a peice"""
         clicked_spot = None
         click_box    = 0
+        # Get the coordinates of the click
+        x_click, y_click = event.pos
 
         # Get the current board for checking click locations
         current_board = self._JanggiGame.get_board().get_board_layout()
@@ -137,8 +139,6 @@ class Janggi:
                 # Get the coordinates of the current location
                 x_loc = column*94+39
                 y_loc = row*94+39
-                # Get the coordinates of the click
-                x_click, y_click = event.pos
                 # Calculate the distance between the center and the click
                 distance = sqrt((x_loc-x_click)**2 + (y_loc-y_click)**2)
                 # Find what is at the location
@@ -160,8 +160,6 @@ class Janggi:
                 # Check whether or not the click is within the click box and exit for
                 if distance < click_box:
                     clicked_spot = row, column
-                    print(clicked_spot)
-                    print(self._clicked_piece)
                     break
 
         # Check that there was a valid click
@@ -185,6 +183,11 @@ class Janggi:
                 if clicked_piece is not None:
                     if clicked_piece.get_color() == self._JanggiGame.get_current_side().get_color():
                         self._clicked_piece = clicked_piece
+        # Check if UI buttons were clicked
+        else:
+            if 1090 >= x_click and x_click >= 1030 and 260 >= y_click and y_click>= 200:
+                self._JanggiGame.make_move((9, 9), (9, 9))
+
 
 
 
