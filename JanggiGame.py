@@ -376,8 +376,9 @@ class Chariot(JanggiPiece):
                 valid_move_list.append(target_position)
                 target_position = target_position[0] + row_move, target_position[1] + column_move
 
-        # Check for valid moves in the place
-        if board.check_special_palace_move(current_position[0], current_position[1]):
+        # Check for valid moves in the palace
+        if board.check_special_palace_move(current_position[0], current_position[1]) and \
+                board.check_space_in_palace(current_position[0], current_position[1]):
             moves_directions = [(1, 1),  # South East
                                 (-1, 1),  # North East
                                 (-1, -1),  # North West
@@ -560,7 +561,8 @@ class Soldier(JanggiPiece):
                 valid_move_list.append(target_position)
 
         # Check for valid moves in the palace
-        if board.check_special_palace_move(current_position[0], current_position[1]):
+        if board.check_special_palace_move(current_position[0], current_position[1]) and \
+                board.check_space_in_palace(current_position[0], current_position[1]):
             move_list = [(move_direction, -1), (move_direction, 1)]
             for move_row, move_column in move_list:
                 target_position = current_position[0] + move_row, current_position[1] + move_column
