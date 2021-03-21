@@ -17,6 +17,7 @@ class Janggi:
         self._valid_move_img = None
         self._status_bar_img = None
         self._current_side_font = None
+        self._pass_text = None
         self._blue_side_text = None
         self._red_side_text = None
 
@@ -55,6 +56,8 @@ class Janggi:
         self._current_side_font = pygame.font.SysFont("Sans", 40)
         self._blue_side_text = self._current_side_font.render("Blue Turn", False, (0, 0, 255))
         self._red_side_text = self._current_side_font.render("Red Turn", False, (255, 0, 0))
+        pass_button_font = pygame.font.SysFont("Sans", 25)
+        self._pass_text = pass_button_font.render("Pass", False, (0, 0, 0))
 
     def on_event(self, event):
         """Handles game events"""
@@ -84,18 +87,23 @@ class Janggi:
                     piece_type = piece.get_piece_type()
                     self._display_surf.blit(self._piece_images[color][piece_type], (column*94-20, row*94-13))
 
-        # Draw valid moves if a piece has been clicked
+        # Draw valid moves and selected piece if a piece has been clicked
         if self._clicked_piece is not None:
             valid_moves = self._clicked_piece.find_valid_moves(self._JanggiGame.get_board())
             for row, column in valid_moves:
                 self._display_surf.blit(self._valid_move_img, (column * 94 - 20, row * 94 - 13))
+            row, column = self._clicked_piece.get_location()
+            self._display_surf.blit(self._valid_move_img, (column * 94 - 20, row * 94 - 13))
 
         # Show text for current side
         if self._JanggiGame.get_current_side().get_color() == "blue":
-            self._display_surf.blit(self._blue_side_text, (900, 205))
+            self._display_surf.blit(self._blue_side_text, (880, 205))
         else:
-            self._display_surf.blit(self._red_side_text, (900, 205))
+            self._display_surf.blit(self._red_side_text, (880, 205))
 
+        # Draw a rectangle for the pass button
+        pygame.draw.rect(self._display_surf, (0, 0, 0), Rect(1030, 200, 60, 60), width=2, border_radius=4)
+        self._display_surf.blit(self._pass_text, (1038, 213))
 
         # Render the board
         pygame.display.flip()
