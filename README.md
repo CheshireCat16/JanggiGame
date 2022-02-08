@@ -1,4 +1,4 @@
-# A Janggi Game
+# The Game of Janggi
 <b>Objective</b><br>
 <p>This project started off as a final project for a class at Oregon State University that ended in March 2021. After completing the class, I decided to extend the project in order to make it fully functional and to give it a graphical user interface.</p><br>
 <b>Update - March 21, 2021</b><br>
